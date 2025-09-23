@@ -34,7 +34,7 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public void Delete<Thing>(Thing entity)
+        public bool Delete<Thing>(long id)
         {
             throw new NotImplementedException();
         }
