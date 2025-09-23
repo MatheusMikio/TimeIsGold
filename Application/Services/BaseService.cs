@@ -8,11 +8,20 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class BaseService : IBaseService
+    public class BaseService<TEntity, TRepository> : IBaseService where TEntity : class
+        where TRepository : IBaseRepository
     {
+        private readonly TRepository _repository;
+
+        public BaseService(TRepository repository)
+        {
+            _repository = repository;
+        }
+        
         public List<Thing> GetAll<Thing>(int page, int size)
         {
-            throw new NotImplementedException();
+            List<TEntity> entities = _repository.GetAll<TEntity>(page, size);
+            
         }
         public List<Thing> Get<Thing>(string q)
         {

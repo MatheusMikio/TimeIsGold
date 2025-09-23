@@ -14,6 +14,6 @@ namespace Domain.Ports
         public Thing GetById<Thing>(long id);
         public bool Create<Thing>(Thing entity, out List<ErrorMessage> mensagens);
         public void Update<Thing>(Thing entity, out List<ErrorMessage> mensagens);
-        public void Delete<Thing>(long id);
+        public bool Delete<Thing>(long id);
     }
 }
