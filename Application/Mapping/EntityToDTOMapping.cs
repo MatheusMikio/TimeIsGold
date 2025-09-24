@@ -6,6 +6,7 @@ using Application.DTOs.Scheduling;
 using Application.DTOs.SchedulingType;
 using AutoMapper;
 using Domain.Entities;
+using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,13 @@ namespace Application.Mapping
             CreateMap<ProfessionalDTO, Professional>();
             CreateMap<SchedulingDTO, Scheduling>();
             CreateMap<SchedulingTypeDTO, SchedulingType>();
+
+            //Mapeamento dos enums
+            CreateMap<int, PlanLevel>().ConvertUsing(src => (PlanLevel)src);
+            CreateMap<PlanLevel, int>().ConvertUsing(src => (int)src);
+
+            CreateMap<int, ProfessionalType>().ConvertUsing(src => (ProfessionalType)src);
+            CreateMap<ProfessionalType, int>().ConvertUsing(src => (int)src);
         }
     }
 }

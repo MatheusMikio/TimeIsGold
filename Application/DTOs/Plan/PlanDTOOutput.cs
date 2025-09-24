@@ -12,7 +12,7 @@ namespace Application.DTOs.Plan
     public class PlanDTOOutput : BaseEntityDTO
     {
         public PlanLevel Level { get; set; }
-        public decimal value { get; set; }
+        public decimal Value { get; set; }
         public int ScheduleTypeLimit { get; set; }
         public IList<EnterpriseDTOOutput> ? Enterprises { get; set; }
     }
