@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using AutoMapper;
+using Domain.Entities;
 using Domain.Ports;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,20 @@ namespace Application.Services
     public class BaseService<TEntity, TRepository> : IBaseService where TEntity : class
         where TRepository : IBaseRepository
     {
-        private readonly TRepository _repository;
-
-        public BaseService(TRepository repository)
+        protected readonly TRepository _repository;
+        protected readonly IMapper _mapper;
+        public BaseService(TRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         
         public List<Thing> GetAll<Thing>(int page, int size)
         {
             List<TEntity> entities = _repository.GetAll<TEntity>(page, size);
-            
+            return _mapper.Map<List<Thing>>(entities);
         }
+
         public List<Thing> Get<Thing>(string q)
         {
             throw new NotImplementedException();
@@ -30,7 +33,11 @@ namespace Application.Services
 
         public Thing GetById<Thing>(long id)
         {
-            throw new NotImplementedException();
+            TEntity ? entity = _repository.GetById<TEntity>(id);
+
+            if (entity == null) return default;
+
+            return _mapper.Map<Thing>(entity);
         }
 
         public bool Create<Thing>(Thing entity, out List<ErrorMessage> mensagens)

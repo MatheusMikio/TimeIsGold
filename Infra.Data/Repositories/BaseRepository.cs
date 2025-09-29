@@ -10,7 +10,7 @@ namespace Infra.Data.Repositories
 {
     public class BaseRepository : IBaseRepository
     {
-        private readonly TimeIsGoldDbContext _context;
+        protected readonly TimeIsGoldDbContext _context;
 
         public BaseRepository(TimeIsGoldDbContext context)
         {
