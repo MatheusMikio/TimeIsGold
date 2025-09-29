@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class BaseService<TEntity, TRepository> : IBaseService where TEntity : class
+    public class BaseService<TDTO, TEntity, TRepository> : IBaseService 
+        where TDTO : class 
+        where TEntity : class
         where TRepository : IBaseRepository
     {
         protected readonly TRepository _repository;
         protected readonly IMapper _mapper;
+
         public BaseService(TRepository repository, IMapper mapper)
         {
             _repository = repository;

@@ -3,6 +3,9 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using Domain.Ports;
+using Application.Services;
+using Infra.Data.Repositories;
 
 namespace TimeIsGold
 {
@@ -24,6 +27,10 @@ namespace TimeIsGold
             });
             IMapper mapper = mapperConfig.CreateMapper();
             builder.Services.AddSingleton(mapper);
+
+            //Injeção de dependência dos repositórios e serviços
+            builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
