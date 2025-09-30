@@ -12,7 +12,7 @@ namespace TimeIsGold.Controllers
         where TEntity : class
         where TService : IBaseService
     {
-        private readonly TService _service;
+        protected readonly TService _service;
 
         public BaseController(TService service)
         {
@@ -39,13 +39,6 @@ namespace TimeIsGold.Controllers
             return Ok(entity);
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody]TEntity entity)
-        {
-            if (_service.Create<TEntity>(entity, out List<ErrorMessage> erros)) return CreatedAtAction(nameof(Create), entity);
-
-            return BadRequest(erros);
-        }
 
         [HttpPut]
         public IActionResult Update([FromBody] TEntity entity)
