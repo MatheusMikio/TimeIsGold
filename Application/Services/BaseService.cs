@@ -43,11 +43,6 @@ namespace Application.Services
             return _mapper.Map<Thing>(entity);
         }
 
-        public bool Create<Thing>(Thing entity, out List<ErrorMessage> mensagens)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Update<Thing>(Thing entity, out List<ErrorMessage> mensagens)
         {
             throw new NotImplementedException();
