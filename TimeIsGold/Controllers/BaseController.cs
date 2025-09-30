@@ -20,7 +20,7 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int size = 10, [FromQuery] string q = null)
+        public IActionResult GetAll([FromQuery] int page = 1, [FromQuery] int size = 12, [FromQuery] string q = null)
         {
             if (page < 1 || size < 1) return BadRequest("'Page' e 'Size' devem ser maiores que 0.");
 
