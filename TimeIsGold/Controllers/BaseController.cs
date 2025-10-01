@@ -39,17 +39,6 @@ namespace TimeIsGold.Controllers
             return Ok(entity);
         }
 
-
-        [HttpPut]
-        public IActionResult Update([FromBody] TEntity entity)
-        {
-            _service.Update<TEntity>(entity, out List<ErrorMessage> erros);
-
-            if (erros.Count == 0) return NoContent();
-            
-            return BadRequest(erros);
-        }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {

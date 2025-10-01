@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Plan;
+using Domain.DTOs.Plan;
 using Domain.Entities;
 using Domain.Ports;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,16 @@ namespace TimeIsGold.Controllers
             if (_service.Create(planDTO, out List<ErrorMessage> erros)) return CreatedAtAction(nameof(Create), planDTO);
 
             return UnprocessableEntity(erros);
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] PlanDTOUpdate entity)
+        {
+            _service.Update(entity, out List<ErrorMessage> erros);
+
+            if (erros.Count == 0) return NoContent();
+
+            return BadRequest(erros);
         }
     }
 }
