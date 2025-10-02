@@ -45,7 +45,13 @@ namespace Application.Services
 
         public bool Delete<Thing>(long id)
         {
-            throw new NotImplementedException();
+            TEntity ? entity = _repository.GetById<TEntity>(id);
+
+            if (entity == null) return false;
+
+            _repository.Delete(entity);
+
+            return true;
         }
     }
 }
