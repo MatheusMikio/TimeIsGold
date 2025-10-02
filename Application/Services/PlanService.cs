@@ -46,10 +46,21 @@ namespace Application.Services
 
             if (valid)
             {
+                Plan planEntity = _repository.GetById<Plan>(entity.Id);
+
+                if (planEntity == null)
+                {
+                    messages.Add(new ErrorMessage("Plano", "Plano não encontrado"));
+                    return;
+                }
+
                 try
                 {
-                    Plan plaEntity = _mapper.Map<Plan>(entity);
-                    _repository.Update(plaEntity);
+                    planEntity.Value = entity.Value;
+                    planEntity.Level = (PlanLevel)entity.Level;
+                    planEntity.ChangedAt = DateTime.UtcNow;
+                    planEntity.ScheduleTypeLimit = entity.ScheduleTypeLimit;
+                    _repository.Update(planEntity);
                 }
                 catch (Exception ex)
                 {
@@ -95,12 +106,20 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            Plan? planDb = repository.GetById<Plan>(plan.Id);
+            if (repository.IsUnique(plan))
+            {
+                messages.Add(new ErrorMessage("Plano", "Já existe um plano nesse formato"));
+                validation = false;
+                return validation;
+            }
+
+            Plan ? planDb = repository.GetById<Plan>(plan.Id);
 
             if (planDb == null)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano não encontrado")) ;
                 validation = false;
+                return validation;
             }
 
             if (plan.Level < 1 || plan.Level > 3)

@@ -5,6 +5,7 @@ using Application.DTOs.Professional;
 using Application.DTOs.Scheduling;
 using Application.DTOs.SchedulingType;
 using AutoMapper;
+using Domain.DTOs.Plan;
 using Domain.Entities;
 using Domain.ValueObjects;
 using System;

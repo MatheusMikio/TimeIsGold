@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.DTOs.Plan;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace Domain.Ports
 {
     public interface IPlanRepository : IBaseRepository
     {
+        public bool IsUnique(PlanDTOUpdate plan);
     }
 }
