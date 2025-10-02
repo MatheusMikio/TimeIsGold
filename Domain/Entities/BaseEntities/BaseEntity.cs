@@ -14,7 +14,7 @@ namespace Domain.Entities.BaseEntities
 
         protected BaseEntity()
         {
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
         }
     }
 }

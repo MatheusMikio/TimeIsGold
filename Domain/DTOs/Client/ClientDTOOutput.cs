@@ -11,6 +11,6 @@ namespace Application.DTOs.Client
 {
     public class ClientDTOOutput : BaseUserDTOOutput
     {
-        public IList<EnterpriseDTOOutput> ? enterprises { get; set; }
+        public IList<EnterpriseDTOOutput> ? Enterprises { get; set; }
     }
 }

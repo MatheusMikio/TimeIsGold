@@ -1,7 +1,11 @@
-
+using Application.Mapping;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
+using Domain.Ports;
+using Application.Services;
+using Infra.Data.Repositories;
 
 namespace TimeIsGold
 {
@@ -16,14 +20,24 @@ namespace TimeIsGold
             builder.Services.AddDbContext<TimeIsGoldDbContext>(options =>
                 options.UseNpgsql(connection));
 
+            // Configuração manual do AutoMapper
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new EntityToDTOMapping());
+            });
+            IMapper mapper = mapperConfig.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+
+            //Injeção de dependência dos repositórios e serviços
+            builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -31,10 +45,7 @@ namespace TimeIsGold
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
