@@ -18,19 +18,13 @@ namespace TimeIsGold.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] PlanDTO plan)
         {
-            if (_service.Create(plan, out List<ErrorMessage> errors)) return CreatedAtAction(nameof(Create), plan);
-
-            return UnprocessableEntity(errors);
+            return base.Create(plan);
         }
 
         [HttpPut]
         public IActionResult Update([FromBody] PlanDTOUpdate plan)
         {
-            _service.Update(plan, out List<ErrorMessage> errors);
-
-            if (errors.Count == 0) return NoContent();
-
-            return BadRequest(errors);
+            return base.Update(plan);
         }
     }
 }
