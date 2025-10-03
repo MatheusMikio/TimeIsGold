@@ -1,4 +1,6 @@
-﻿using Domain.DTOs.SchedulingType;
+﻿using Application.DTOs.SchedulingType;
+using Domain.DTOs.SchedulingType;
+using Domain.Entities;
 using Domain.Ports;
 using Infrastructure.Data;
 using System;
@@ -15,9 +17,13 @@ namespace Infra.Data.Repositories
         {
         }
 
+        public SchedulingType ? GetByName(SchedulingTypeDTO scheduling) => _context.SchedulingTypes.FirstOrDefault(s => s.Name == scheduling.Name &&
+        s.EnterpriseId == scheduling.EnterpriseId);
+
         public bool IsUnique(SchedulingTypeDTOUpdate plan)
         {
             throw new NotImplementedException();
         }
+
     }
 }

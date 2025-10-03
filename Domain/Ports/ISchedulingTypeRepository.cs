@@ -1,5 +1,8 @@
-﻿using Domain.DTOs.Plan;
+﻿using Application.DTOs.Scheduling;
+using Application.DTOs.SchedulingType;
+using Domain.DTOs.Plan;
 using Domain.DTOs.SchedulingType;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +14,6 @@ namespace Domain.Ports
     public interface ISchedulingTypeRepository : IBaseRepository
     {
         public bool IsUnique(SchedulingTypeDTOUpdate plan);
+        public SchedulingType GetByName(SchedulingTypeDTO name);
     }
 }

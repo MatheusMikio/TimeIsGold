@@ -6,7 +6,9 @@ using Domain.Entities;
 using Domain.Ports;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +22,36 @@ namespace Application.Services
 
         public bool Create(SchedulingTypeDTO planDTO, out List<ErrorMessage> messages)
         {
+            bool valid = Validate(planDTO, out messages, _repository);
+        }
+
+        public void Update(SchedulingTypeDTOUpdate entity, out List<ErrorMessage> messages)
+        {
             throw new NotImplementedException();
         }
 
-        public void Update(SchedulingTypeDTOUpdate entity, out List<ErrorMessage> mensagens)
+
+        public static bool Validate(SchedulingTypeDTO scheduling, out List<ErrorMessage> messages, ISchedulingTypeRepository repository)
         {
-            throw new NotImplementedException();
+            ValidationContext validationContext = new(scheduling);
+            List<ValidationResult> errors = new();
+            bool validation = Validator.TryValidateObject(scheduling, validationContext, errors, true);
+
+            messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            if (string.IsNullOrEmpty(scheduling.Description))
+            {
+                messages.Add(new ErrorMessage("Descrição", "A descrição é obrigatória"));
+                return false;
+            }
+
+            if (repository.GetByName(scheduling) != null)
+            {
+                messages.Add(new ErrorMessage("Nome", "Já existe um tipo de agendamento com esse nome"));
+                validation = false;
+            }
+
+            return validation;
         }
     }
 }
