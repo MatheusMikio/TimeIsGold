@@ -92,6 +92,7 @@ namespace Application.Services
             if (plan.ScheduleTypeLimit < 5)
             {
                 messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
+                validation = false;
             }
 
             return validation;
@@ -137,6 +138,7 @@ namespace Application.Services
             if (plan.ScheduleTypeLimit < 5)
             {
                 messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
+                validation = false;
             }
 
             return validation;

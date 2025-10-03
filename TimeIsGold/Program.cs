@@ -32,6 +32,9 @@ namespace TimeIsGold
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
+            builder.Services.AddScoped<ISchedulingTypeService, SchedulingTypeService>();
+            builder.Services.AddScoped<ISchedulingTypeRepository, SchedulingTypeRepository>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

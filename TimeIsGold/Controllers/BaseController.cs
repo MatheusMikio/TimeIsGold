@@ -42,9 +42,9 @@ namespace TimeIsGold.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            bool sucess = _service.Delete<TEntity>(id);
+            bool success = _service.Delete<TEntity>(id);
 
-            if (!sucess) return NotFound("Não encontrado.");
+            if (!success) return NotFound("Não encontrado.");
 
             return NoContent();
         }
