@@ -46,7 +46,7 @@ namespace Application.Services
 
             if (valid)
             {
-                Plan planEntity = _repository.GetById<Plan>(entity.Id);
+                Plan ? planEntity = _repository.GetById<Plan>(entity.Id);
 
                 if (planEntity == null)
                 {
@@ -107,7 +107,7 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (repository.IsUnique(plan))
+            if (!repository.IsUnique(plan))
             {
                 messages.Add(new ErrorMessage("Plano", "Já existe um plano nesse formato"));
                 validation = false;

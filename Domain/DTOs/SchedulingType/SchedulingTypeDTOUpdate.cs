@@ -11,6 +11,7 @@ namespace Domain.DTOs.SchedulingType
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public decimal Value { get; set; }
         public long EnterpriseId { get; set; }
     }
 }

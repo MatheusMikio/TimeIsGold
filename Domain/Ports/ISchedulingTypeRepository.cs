@@ -14,6 +14,6 @@ namespace Domain.Ports
     public interface ISchedulingTypeRepository : IBaseRepository
     {
         public bool IsUnique(SchedulingTypeDTOUpdate plan);
-        public SchedulingType GetByName(SchedulingTypeDTO name);
+        public bool GetByName(string name, long enterpriseId);
     }
 }

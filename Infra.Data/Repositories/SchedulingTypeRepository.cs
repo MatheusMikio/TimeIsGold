@@ -17,12 +17,18 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public SchedulingType ? GetByName(SchedulingTypeDTO scheduling) => _context.SchedulingTypes.FirstOrDefault(s => s.Name == scheduling.Name &&
-        s.EnterpriseId == scheduling.EnterpriseId);
+        public bool GetByName(string schedulingTypeName, long enterpriseId) => _context.SchedulingTypes.Any(s => s.Name == schedulingTypeName &&
+        s.EnterpriseId == enterpriseId);
 
-        public bool IsUnique(SchedulingTypeDTOUpdate plan)
+        public bool IsUnique(SchedulingTypeDTOUpdate schedulingType)
         {
-            throw new NotImplementedException();
+            return !_context.SchedulingTypes.Any(
+                s => s.Id != schedulingType.Id &&
+                (
+                    s.Name == schedulingType.Name &&
+                    s.EnterpriseId == schedulingType.EnterpriseId
+                )
+            );
         }
 
     }

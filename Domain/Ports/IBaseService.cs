@@ -12,8 +12,8 @@ namespace Domain.Ports
         public List<Thing> GetAll<Thing>(int page, int size);
         public List<Thing> Get<Thing>(string q);
         public Thing GetById<Thing>(long id);
-        public bool Create<TCreateDTO>(TCreateDTO entity, out List<ErrorMessage> erros);
-        public void Update<TUpdateDTO>(TUpdateDTO entity, out List<ErrorMessage> erros);
+        public bool Create<TCreateDTO>(TCreateDTO entity, out List<ErrorMessage> errors);
+        public void Update<TUpdateDTO>(TUpdateDTO entity, out List<ErrorMessage> errors);
         public bool Delete<Thing>(long id);
     }
 }
