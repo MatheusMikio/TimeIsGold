@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

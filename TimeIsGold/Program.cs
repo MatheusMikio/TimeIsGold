@@ -3,9 +3,10 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
-using Domain.Ports;
 using Application.Services;
 using Infra.Data.Repositories;
+using Domain.Ports.Plan;
+using Domain.Ports.SchedulingType;
 
 namespace TimeIsGold
 {

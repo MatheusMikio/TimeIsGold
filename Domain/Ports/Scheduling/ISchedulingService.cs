@@ -1,13 +1,14 @@
 ﻿using Application.DTOs.Scheduling;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
+using Domain.Ports.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Ports
+namespace Domain.Ports.Scheduling
 {
     public interface ISchedulingService : IBaseService
     {

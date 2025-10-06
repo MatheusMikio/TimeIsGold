@@ -1,5 +1,5 @@
 ﻿using Domain.DTOs.Plan;
-using Domain.Ports;
+using Domain.Ports.Plan;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;

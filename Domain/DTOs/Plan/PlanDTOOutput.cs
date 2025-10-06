@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Enterprise;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

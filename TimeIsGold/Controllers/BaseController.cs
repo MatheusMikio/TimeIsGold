@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Base;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

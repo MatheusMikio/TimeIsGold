@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Client;
 using Application.DTOs.Professional;
 using Application.DTOs.SchedulingType;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

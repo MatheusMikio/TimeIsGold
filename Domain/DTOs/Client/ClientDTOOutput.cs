@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.Enterprise;
 using Application.DTOs.Scheduling;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

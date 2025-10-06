@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.SchedulingType;
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.SchedulingType;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;

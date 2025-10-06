@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Scheduling;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Scheduling;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Scheduling;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

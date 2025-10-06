@@ -1,4 +1,4 @@
-﻿using Domain.Ports;
+﻿using Domain.Ports.Base;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;

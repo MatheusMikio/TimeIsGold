@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities.BaseEntities
+namespace Domain.DTOs.Base
 {
     public abstract class BaseUserDTOOutput : BaseEntityDTO
     {

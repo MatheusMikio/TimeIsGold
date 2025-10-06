@@ -3,7 +3,7 @@ using Application.DTOs.SchedulingType;
 using AutoMapper;
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.SchedulingType;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

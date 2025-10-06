@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain.DTOs.Plan;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Plan;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using Application.DTOs.Plan;
 using Domain.DTOs.Plan;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Plan;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

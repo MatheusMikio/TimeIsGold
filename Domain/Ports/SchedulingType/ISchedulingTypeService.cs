@@ -3,13 +3,14 @@ using Application.DTOs.SchedulingType;
 using Domain.DTOs.Plan;
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
+using Domain.Ports.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Ports
+namespace Domain.Ports.SchedulingType
 {
     public interface ISchedulingTypeService : IBaseService
     {
