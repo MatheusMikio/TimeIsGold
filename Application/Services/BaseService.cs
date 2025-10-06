@@ -53,37 +53,5 @@ namespace Application.Services
 
             return true;
         }
-
-        public virtual bool Create<TCreateDTO>(TCreateDTO entity, out List<ErrorMessage> errors)
-        {
-            errors = new List<ErrorMessage>();
-
-            try
-            {
-                TEntity mappedEntity = _mapper.Map<TEntity>(entity);
-                _repository.Create(mappedEntity);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                errors.Add(new ErrorMessage("Sistema","Erro inesperado."));
-                return false;
-            }
-        }
-
-        public virtual void Update<TUpdateDTO>(TUpdateDTO entity, out List<ErrorMessage> errors)
-        {
-            errors = new List<ErrorMessage>();
-
-            try
-            {
-                TEntity mappedEntity = _mapper.Map<TEntity>(entity);
-                _repository.Update(mappedEntity);
-            }
-            catch (Exception ex)
-            {
-                errors.Add(new ErrorMessage("Sistema", "Erro inesperado."));
-            }
-        }
     }
 }
