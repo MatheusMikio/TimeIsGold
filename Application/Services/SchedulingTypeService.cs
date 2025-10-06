@@ -80,7 +80,12 @@ namespace Application.Services
         }
 
 
-        public static bool Validate(SchedulingTypeDTO scheduling, out List<ErrorMessage> messages, ISchedulingTypeRepository SchedulingTyperepository/*, IEnterpiseRepository enterpriseRepository*/)
+        public static bool Validate(
+            SchedulingTypeDTO scheduling,
+            out List<ErrorMessage> messages,
+            ISchedulingTypeRepository SchedulingTyperepository/*,
+            *IEnterpiseRepository enterpriseRepository*/
+        )
         {
             ValidationContext validationContext = new(scheduling);
             List<ValidationResult> errors = new();
@@ -182,12 +187,6 @@ namespace Application.Services
             if (schedulingType.Name.Length < 3)
             {
                 messages.Add(new ErrorMessage("Nome", "O nome deve ter no mínimo 3 caracteres"));
-                validation = false;
-            }
-
-            if (schedulingTypeRepository.GetByName(schedulingType.Name, schedulingType.EnterpriseId))
-            {
-                messages.Add(new ErrorMessage("Nome", "Já existe um tipo de agendamento com esse nome"));
                 validation = false;
             }
 
