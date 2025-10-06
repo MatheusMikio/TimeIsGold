@@ -39,30 +39,12 @@ namespace TimeIsGold.Controllers
             return Ok(entity);
         }
 
-        [HttpPost]
-        public virtual IActionResult Create<TCreateDTO>([FromBody] TCreateDTO entity)
-        {
-            if (_service.Create(entity, out List<ErrorMessage> errors)) return CreatedAtAction(nameof(Create), entity);
-
-            return UnprocessableEntity(errors);
-        }
-
-        [HttpPut]
-        public virtual IActionResult Update<TUpdateDTO>([FromBody] TUpdateDTO updateDto)
-        {
-            _service.Update(updateDto, out List<ErrorMessage> errors);
-
-            if (errors.Count == 0) return NoContent();
-
-            return BadRequest(errors);
-        }
-
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            bool success = _service.Delete<TEntity>(id);
+            bool sucess = _service.Delete<TEntity>(id);
 
-            if (!success) return NotFound("Não encontrado.");
+            if (!sucess) return NotFound("Não encontrado.");
 
             return NoContent();
         }

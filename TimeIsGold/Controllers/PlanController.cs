@@ -16,15 +16,21 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] PlanDTO plan)
+        public IActionResult Create([FromBody] PlanDTO planDTO)
         {
-            return base.Create(plan);
+            if (_service.Create(planDTO, out List<ErrorMessage> errors)) return CreatedAtAction(nameof(Create), planDTO);
+
+            return UnprocessableEntity(errors);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] PlanDTOUpdate plan)
+        public IActionResult Update([FromBody] PlanDTOUpdate entity)
         {
-            return base.Update(plan);
+            _service.Update(entity, out List<ErrorMessage> errors);
+
+            if (errors.Count == 0) return NoContent();
+
+            return BadRequest(errors);
         }
     }
 }
