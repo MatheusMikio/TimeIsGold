@@ -123,7 +123,7 @@ namespace Application.Services
                 return validation;
             }
 
-            if (plan.Level < 1 || plan.Level > 3)
+            if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
                 validation = false;
