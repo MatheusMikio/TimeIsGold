@@ -17,7 +17,7 @@ namespace Infra.Data.Repositories
 
         public bool IsUnique(PlanDTOUpdate plan)
         {
-            return _context.Plans.Any(
+            return !_context.Plans.Any(
                 p => p.Id != plan.Id 
                 && (
                     (int)p.Level == plan.Level 

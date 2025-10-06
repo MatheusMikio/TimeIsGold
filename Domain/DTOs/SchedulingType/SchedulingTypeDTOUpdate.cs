@@ -1,18 +1,17 @@
-﻿using Domain.Entities.BaseEntities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Domain.DTOs.SchedulingType
 {
-    public class SchedulingType : BaseEntity
+    public class SchedulingTypeDTOUpdate
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Value { get; set; }
         public long EnterpriseId { get; set; }
-        public Enterprise Enterprise { get; set; }
     }
 }
