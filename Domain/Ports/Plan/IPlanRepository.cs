@@ -12,6 +12,5 @@ namespace Domain.Ports.Plan
     {
         public bool IsUnique(PlanDTOUpdate plan);
         public bool GetLevel(int level);
-        public bool GetLevel(PlanDTOUpdate plan);
     }
 }

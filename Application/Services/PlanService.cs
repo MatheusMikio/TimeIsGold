@@ -103,7 +103,6 @@ namespace Application.Services
 
             return validation;
         }
-    
 
         public static bool ValidateUpdate(PlanDTOUpdate plan, out List<ErrorMessage> messages, IPlanRepository repository)
         {
@@ -116,12 +115,6 @@ namespace Application.Services
             if (!repository.IsUnique(plan))
             {
                 messages.Add(new ErrorMessage("Plano", "Já existe um plano nesse formato"));
-                return false;
-            }
-
-            if (!repository.GetLevel(plan))
-            {
-                messages.Add(new ErrorMessage("Plano", "Já existe um plano com esse nível"));
                 return false;
             }
 
