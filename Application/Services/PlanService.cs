@@ -77,7 +77,7 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (plan.Level < 1 || plan.Level > 3)
+            if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
                 validation = false;
