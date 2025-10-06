@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs.Enterprise
 {
-    internal class EnterpriseDTOUpdate
+    public class EnterpriseDTOUpdate
     {
     }
 }

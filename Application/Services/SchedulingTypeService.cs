@@ -52,7 +52,7 @@ namespace Application.Services
 
         public void Update(SchedulingTypeDTOUpdate entity, out List<ErrorMessage> messages)
         {
-            bool valid = ValidateUpdate(entity, out messages, _repository);
+            bool valid = ValidateUpdate(entity, out messages, _repository/*, _enterpriseRepository*/);
 
             if (valid)
             {
