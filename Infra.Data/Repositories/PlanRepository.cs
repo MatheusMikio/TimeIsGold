@@ -15,16 +15,19 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool IsUnique(PlanDTOUpdate plan)
-        {
-            return !_context.Plans.Any(
-                p => p.Id != plan.Id 
-                && (
-                    (int)p.Level == plan.Level 
-                    || p.Value == plan.Value
-                    || p.ScheduleTypeLimit == plan.ScheduleTypeLimit
-                )
-            );
-        }
+        public bool IsUnique(PlanDTOUpdate plan) => !_context.Plans.Any(
+            p => p.Id != plan.Id && 
+            (
+                (int)p.Level == plan.Level
+                || p.Value == plan.Value
+                || p.ScheduleTypeLimit == plan.ScheduleTypeLimit
+            )
+        );
+
+        public bool GetLevel(int level) => _context.Plans.Any(p => (int)p.Level == level);
+        public bool GetLevel(PlanDTOUpdate plan) => !_context.Plans.Any(
+            p => p.Id != plan.Id && 
+            (int)p.Level == plan.Level
+        );
     }
 }

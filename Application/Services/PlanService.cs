@@ -80,7 +80,13 @@ namespace Application.Services
             if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
-                validation = false;
+                return false;
+            }
+
+            if (repository.GetLevel(plan.Level))
+            {
+                messages.Add(new ErrorMessage("Plano", "Já existe um plano com esse nível"));
+                return false;
             }
 
             if (plan.Value < 100)
@@ -110,8 +116,13 @@ namespace Application.Services
             if (!repository.IsUnique(plan))
             {
                 messages.Add(new ErrorMessage("Plano", "Já existe um plano nesse formato"));
-                validation = false;
-                return validation;
+                return false;
+            }
+
+            if (!repository.GetLevel(plan))
+            {
+                messages.Add(new ErrorMessage("Plano", "Já existe um plano com esse nível"));
+                return false;
             }
 
             Plan ? planDb = repository.GetById<Plan>(plan.Id);
@@ -119,8 +130,7 @@ namespace Application.Services
             if (planDb == null)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano não encontrado")) ;
-                validation = false;
-                return validation;
+                return false;
             }
 
             if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
