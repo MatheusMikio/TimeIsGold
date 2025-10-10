@@ -24,7 +24,7 @@ namespace TimeIsGold.Controllers
         {
             if (page < 1 || size < 1) return BadRequest("'Page' e 'Size' devem ser maiores que 0.");
 
-            return string.IsNullOrEmpty(q) ? Ok(_service.GetAll<TEntity>(page, size)) : Ok(_service.Get<TEntity>(q));
+            return Ok(_service.GetAll<TEntity>(page, size, q));
         }
 
         [HttpGet("{id}")]
