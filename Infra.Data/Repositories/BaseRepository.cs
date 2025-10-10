@@ -20,28 +20,14 @@ namespace Infra.Data.Repositories
             _context = context;
         }
 
-        public List<Thing> GetAll<Thing>(int page, int size) where Thing : class
+        public List<Thing> GetAll<Thing>(int page, int size) where Thing : class 
             => _context.Set<Thing>()
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToList();
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToList();
+        
 
-        public List<Thing> GetAll<Thing>(int page, int size, Expression<Func<Thing, bool>> filter = null) where Thing : class
-        {
-            IQueryable<Thing> query = _context.Set<Thing>();
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            return query
-                .Skip((page - 1) * size)
-                .Take(size)
-                .ToList();
-        }
-
-        public List<Thing> GetByTextFilter<Thing>(string searchText, int page, int size) where Thing : class
+        public List<Thing> GetByTextFilter<Thing>(int page, int size, string searchText) where Thing : class
         {
             IQueryable<Thing> query = _context.Set<Thing>().AsQueryable();
             if (!string.IsNullOrEmpty(searchText))
@@ -75,9 +61,6 @@ namespace Infra.Data.Repositories
                     _ => query
                 };
             }
-
-
-
 
             return query
                 .Skip((page - 1) * size)
