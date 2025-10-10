@@ -1,8 +1,11 @@
-﻿using Domain.Ports.Base;
+﻿using Domain.Entities;
+using Domain.Ports.Base;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +25,65 @@ namespace Infra.Data.Repositories
                 .Skip((page - 1) * size)
                 .Take(size)
                 .ToList();
+
+        public List<Thing> GetAll<Thing>(int page, int size, Expression<Func<Thing, bool>> filter = null) where Thing : class
+        {
+            IQueryable<Thing> query = _context.Set<Thing>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToList();
+        }
+
+        public List<Thing> GetByTextFilter<Thing>(string searchText, int page, int size) where Thing : class
+        {
+            IQueryable<Thing> query = _context.Set<Thing>().AsQueryable();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                query = typeof(Thing).Name switch
+                {
+                    nameof(
+                        Enterprise) => query.Where(e => EF.Property<string>(e, "Name")
+                        .Contains(searchText) ||
+                        EF.Property<string>(e, "Cnpj").Contains(searchText)
+                    ),
+
+                    nameof(
+                        Client) => query.Where(c => EF.Property<string>(c, "Name")
+                        .Contains(searchText) ||
+                        EF.Property<string>(c, "Cpf").Contains(searchText) ||
+                        EF.Property<string>(c, "Email").Contains(searchText)
+                    ),
+
+                    nameof(
+                        Professional) => query.Where(p => EF.Property<string>(p, "Name")
+                        .Contains(searchText) ||
+                        EF.Property<string>(p, "Cpf").Contains(searchText) ||
+                        EF.Property<string>(p, "Email").Contains(searchText)
+                    ),
+
+                    nameof(
+                        SchedulingType) => query.Where(st => EF.Property<string>(st, "Name")
+                        .Contains(searchText)),
+
+                    _ => query
+                };
+            }
+
+
+
+
+            return query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToList();
+        }
 
         public Thing ? GetById<Thing>(long id) where Thing : class => _context.Set<Thing>().Find(id);
 
