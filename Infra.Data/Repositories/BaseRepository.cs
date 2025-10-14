@@ -56,7 +56,8 @@ namespace Infra.Data.Repositories
 
                     nameof(
                         SchedulingType) => query.Where(st => EF.Property<string>(st, "Name")
-                        .Contains(searchText)),
+                        .Contains(searchText)
+                    ),
 
                     _ => query
                 };
