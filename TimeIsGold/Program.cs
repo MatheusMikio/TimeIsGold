@@ -30,6 +30,7 @@ namespace TimeIsGold
             builder.Services.AddSingleton(mapper);
 
             //Injeção de dependência dos repositórios e serviços
+            //builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
