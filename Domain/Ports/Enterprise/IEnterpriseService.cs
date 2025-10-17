@@ -10,12 +10,9 @@ using Domain.Ports.Base;
 
 namespace Domain.Ports.Enterprise
 {
-    public interface IEnterpriseService
+    public interface IEnterpriseService : IBaseService
     {
-        public interface IEnterpriseService : IBaseService
-        {
-            public bool Create(EnterpriseDTO enterpriseDTO, out List<ErrorMessage> messages);
-            public void Update(EnterpriseDTOUpdate entity, out List<ErrorMessage> mensagens);
-        }
+        public bool Create(EnterpriseDTO enterpriseDTO, out List<ErrorMessage> messages);
+        public void Update(EnterpriseDTOUpdate entity, out List<ErrorMessage> mensagens);
     }
 }

@@ -10,12 +10,9 @@ using Domain.Ports.Base;
 
 namespace Domain.Ports.Professional
 {
-    public interface IProfessionalService
+    public interface IProfessionalService : IBaseService
     {
-        public interface IProfessionalService : IBaseService
-        {
-            public bool Create(ProfessionalDTO professionalDTO, out List<ErrorMessage> messages);
-            public void Update(ProfessionalDTOUpdate entity, out List<ErrorMessage> mensagens);
-        }
+        public bool Create(ProfessionalDTO professionalDTO, out List<ErrorMessage> messages);
+        public void Update(ProfessionalDTOUpdate entity, out List<ErrorMessage> mensagens);
     }
 }
