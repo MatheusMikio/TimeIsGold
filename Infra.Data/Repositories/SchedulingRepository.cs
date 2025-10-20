@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.Plan;
+﻿using Domain.DTOs.Scheduling;
 using Domain.Ports.Scheduling;
 using Infrastructure.Data;
 using System;
@@ -15,9 +15,16 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool IsUnique(PlanDTOUpdate plan)
+        public bool IsUnique(SchedulingDTOUpdate scheduling)
         {
-            throw new NotImplementedException();
+            return !_context.Schedulings.Any(
+               s => s.Id != scheduling.Id &&
+               (
+                   s.ProfessionalId == scheduling.ProfessionalId &&
+                   s.ClientId == scheduling.ClientId &&
+                   s.ScheduledDate == scheduling.ScheduledDate
+               )
+            );
         }
     }
 }

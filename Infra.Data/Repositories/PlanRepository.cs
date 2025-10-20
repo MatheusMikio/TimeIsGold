@@ -20,7 +20,7 @@ namespace Infra.Data.Repositories
             (
                 (int)p.Level == plan.Level
                 || p.Value == plan.Value
-                || p.ScheduleTypeLimit == plan.ScheduleTypeLimit
+                || p.ProfessionalNumberLimit == plan.ProfessionalNumberLimit
             )
         );
 
