@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.DTOs.Enterprise
@@ -19,6 +20,7 @@ namespace Application.DTOs.Enterprise
         public Address Address { get; set; }
         public PlanDTOOutput Plan { get; set; }
         public IList<SchedulingTypeDTOOutput> ? SchedulingType { get; set; }
+        [JsonIgnore]
         public IList<ProfessionalDTOOutput> ? Professionals { get; set; }
         public IList<ClientDTOOutput> ? Clients { get; set; }
     }

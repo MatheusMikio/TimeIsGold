@@ -58,25 +58,25 @@ namespace Application.Services
             }
         }
 
-        public static bool Validate(EnterpriseDTO dto, out List<ErrorMessage> messages, IBaseRepository repository)
+        public static bool Validate(EnterpriseDTO enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
         {
             messages = new List<ErrorMessage>();
             bool isValid = true;
 
-            if (string.IsNullOrEmpty(dto.Name))
+            if (string.IsNullOrEmpty(enterprise.Name))
             {
                 messages.Add(new ErrorMessage("Nome", "O nome da empresa é obrigatório."));
                 isValid = false;
             }
 
-            if (string.IsNullOrEmpty(dto.Cnpj))
+            if (string.IsNullOrEmpty(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("CNPJ", "O CNPJ da empresa é obrigatório."));
                 isValid = false;
             }
             else
             {
-                var existing = repository.GetByTextFilter<Enterprise>(1, 1, dto.Cnpj).FirstOrDefault();
+                var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
                 if (existing != null)
                 {
                     messages.Add(new ErrorMessage("CNPJ", "O CNPJ informado já está em uso por outra empresa."));
@@ -84,7 +84,7 @@ namespace Application.Services
                 }
             }
 
-            if (dto.PlanId <= 0)
+            if (enterprise.PlanId <= 0)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
                 isValid = false;
@@ -93,31 +93,31 @@ namespace Application.Services
            return isValid;
         }
 
-        public static bool ValidateUpdate(EnterpriseDTOUpdate dto, out List<ErrorMessage> messages, IBaseRepository repository)
+        public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
         {
             messages = new List<ErrorMessage>();
             bool isValid = true;
 
-            if (dto.Id <= 0)
+            if (enterprise.Id <= 0)
             {
                 messages.Add(new ErrorMessage("Id", "Id inválido."));
                 isValid = false;
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Name))
+            if (string.IsNullOrWhiteSpace(enterprise.Name))
             {
                 messages.Add(new ErrorMessage("Nome", "O nome da empresa é obrigatório."));
                 isValid = false;
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Cnpj))
+            if (string.IsNullOrWhiteSpace(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ da empresa é obrigatório."));
                 isValid = false;
             }
             else
             {
-                var existing = repository.GetByTextFilter<Enterprise>(1, 1, dto.Cnpj).FirstOrDefault(e => e.Id != dto.Id);
+                var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault(e => e.Id != enterprise.Id);
 
                 if (existing != null)
                 { 
@@ -126,7 +126,7 @@ namespace Application.Services
                 }
             }
 
-            if (dto.PlanId <= 0)
+            if (enterprise.PlanId <= 0)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
                 isValid = false;

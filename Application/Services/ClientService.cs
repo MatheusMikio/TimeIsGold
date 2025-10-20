@@ -63,15 +63,15 @@ namespace Application.Services
             }
         }
 
-        public static bool Validate(ClientDTO dto, out List<ErrorMessage> messages, IClientRepository repository)
+        public static bool Validate(ClientDTO client, out List<ErrorMessage> messages, IClientRepository repository)
         {
-            ValidationContext context = new(dto);
+            ValidationContext context = new(client);
             List<ValidationResult> results = new();
-            bool validation = Validator.TryValidateObject(dto, context, results, true);
+            bool validation = Validator.TryValidateObject(client, context, results, true);
 
             messages = results.Select(e => new ErrorMessage(e.MemberNames.FirstOrDefault(), e.ErrorMessage)).ToList();
 
-            if (repository.EmailExists(dto.Email))
+            if (repository.EmailExists(client.Email))
             {
                 messages.Add(new ErrorMessage("Email", "Email já cadastrado"));
                 validation = false;
@@ -80,15 +80,15 @@ namespace Application.Services
             return validation;
         }
 
-        public static bool ValidateUpdate(ClientDTOUpdate dto, out List<ErrorMessage> messages, IClientRepository repository)
+        public static bool ValidateUpdate(ClientDTOUpdate client, out List<ErrorMessage> messages, IClientRepository repository)
         {
-            ValidationContext context = new(dto);
+            ValidationContext context = new(client);
             List<ValidationResult> results = new();
-            bool validation = Validator.TryValidateObject(dto, context, results, true);
+            bool validation = Validator.TryValidateObject(client, context, results, true);
 
             messages = results.Select(e => new ErrorMessage(e.MemberNames.FirstOrDefault(), e.ErrorMessage)).ToList();
 
-            Client? existingClient = repository.GetById<Client>(dto.Id);
+            Client? existingClient = repository.GetById<Client>(client.Id);
             if (existingClient == null)
             {
                 messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado."));

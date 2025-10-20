@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.DTOs.Enterprise;
-using Domain.DTOs.Plan;
+﻿using Domain.DTOs.Enterprise;
 using Domain.Ports.Base;
 
 namespace Domain.Ports.Enterprise
@@ -12,5 +6,8 @@ namespace Domain.Ports.Enterprise
     public interface IEnterpriseRepository : IBaseRepository
     {
         public bool IsUnique(EnterpriseDTOUpdate enterprise);
+        bool CnpjExists(string cnpj, long? ignoreId = null);
+        Entities.Enterprise? GetById(long id);
+        List<Entities.Enterprise> GetAll();
     }
 }

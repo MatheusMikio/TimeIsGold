@@ -10,8 +10,11 @@ namespace TimeIsGold.Controllers
     [ApiController]
     public class EnterpriseController : BaseController<EnterpriseDTOOutput, IEnterpriseService>
     {
+        private readonly IEnterpriseService _service;
+
         public EnterpriseController(IEnterpriseService service) : base(service)
         {
+            _service = service;
         }
 
         [HttpPost]

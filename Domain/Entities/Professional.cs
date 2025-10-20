@@ -15,6 +15,7 @@ namespace Domain.Entities
         public Enterprise Enterprise { get; set; }
 
         public string Function { get; set; }
+        public string Password { get; set; }
 
         public Professional() { }
     }
