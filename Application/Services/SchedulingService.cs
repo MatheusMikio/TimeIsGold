@@ -119,5 +119,20 @@ namespace Application.Services
         {
             throw new NotImplementedException();
         }
+
+        public int GetTodaySchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+
+            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
+
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return 0;
+            }
+
+            return _repository.GetTodaySchedulings(id);
+        }
     }
 }

@@ -59,7 +59,7 @@ namespace Application.Services
                     planEntity.Value = entity.Value;
                     planEntity.Level = (PlanLevel)entity.Level;
                     planEntity.ChangedAt = DateTime.UtcNow;
-                    planEntity.ScheduleTypeLimit = entity.ScheduleTypeLimit;
+                    planEntity.ProfessionalNumberLimit = entity.ProfessionalNumberLimit;
                     _repository.Update(planEntity);
                 }
                 catch (Exception ex)
@@ -95,7 +95,7 @@ namespace Application.Services
                 validation = false;
             }
 
-            if (plan.ScheduleTypeLimit < 5)
+            if (plan.ProfessionalNumberLimit < 5)
             {
                 messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
                 validation = false;
@@ -138,7 +138,7 @@ namespace Application.Services
                 validation = false;
             }
 
-            if (plan.ScheduleTypeLimit < 5)
+            if (plan.ProfessionalNumberLimit < 5)
             {
                 messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
                 validation = false;

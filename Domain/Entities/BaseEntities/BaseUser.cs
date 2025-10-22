@@ -13,7 +13,6 @@ namespace Domain.Entities.BaseEntities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public IList<Scheduling> ? Schedulings { get; set; }
-
         protected BaseUser(){ }
     }
 }

@@ -15,6 +15,16 @@ namespace TimeIsGold.Controllers
         {
         }
 
+        [HttpGet("GetTodaySchedulings")]
+        public IActionResult GetTodaySchedulings(long id)
+        {
+            int schedulings = _service.GetTodaySchedulings(id, out List<ErrorMessage> errors);
+
+            if (errors.Count == 0) return Ok(schedulings);
+
+            return BadRequest(errors);
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody]SchedulingDTO schedulingDTO)
         {

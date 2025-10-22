@@ -12,7 +12,7 @@ namespace Domain.Entities
     {
         public PlanLevel Level { get; set; }
         public decimal Value { get; set; }
-        public int ScheduleTypeLimit { get; set; }
+        public int ProfessionalNumberLimit { get; set; }
         public IList<Enterprise> Enterprises { get; set; } = new List<Enterprise>();
     }
 }

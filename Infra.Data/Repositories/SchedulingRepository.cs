@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs.Scheduling;
+using Domain.Entities;
 using Domain.Ports.Scheduling;
 using Infrastructure.Data;
 using System;
@@ -24,6 +25,17 @@ namespace Infra.Data.Repositories
                    s.ClientId == scheduling.ClientId &&
                    s.ScheduledDate == scheduling.ScheduledDate
                )
+            );
+        }
+
+        public int GetTodaySchedulings(long id)
+        {
+            DateTime today = DateTime.Today;
+            DateTime tomorrow = today.AddDays(1);
+
+            return _context.Schedulings.Count(s => s.Professional.EnterpriseId == id &&
+                s.ScheduledDate >= today &&
+                s.ScheduledDate < tomorrow
             );
         }
     }
