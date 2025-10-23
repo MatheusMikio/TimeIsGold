@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs.Scheduling;
 using Domain.Entities;
 using Domain.Ports.Scheduling;
+using Domain.ValueObjects;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,13 @@ namespace Infra.Data.Repositories
             return _context.Schedulings.Count(s => s.Professional.EnterpriseId == id &&
                 s.ScheduledDate >= today &&
                 s.ScheduledDate < tomorrow
+            );
+        }
+
+        public int GetPendentsSchedulings(long id)
+        {
+            return _context.Schedulings.Count(s => s.Professional.EnterpriseId == id &&
+                s.Status == Status.Pendent
             );
         }
     }
