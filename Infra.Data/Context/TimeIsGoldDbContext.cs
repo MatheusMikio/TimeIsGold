@@ -16,14 +16,9 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Relacionamento muitos-para-muitos entre Client e Enterprise
-            modelBuilder.Entity<Enterprise>()
-                .HasMany(e => e.Clients)
-                .WithMany(c => c.Enterprises);
-
             // Relacionamento um-para-muitos entre Enterprise e Professional
             modelBuilder.Entity<Enterprise>()
-                .HasMany(e => e.Professionals) 
+                .HasMany(e => e.Professionals)
                 .WithOne(p => p.Enterprise)
                 .HasForeignKey(p => p.EnterpriseId);
 

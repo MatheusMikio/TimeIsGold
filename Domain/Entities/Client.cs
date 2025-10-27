@@ -9,6 +9,5 @@ namespace Domain.Entities
 {
     public class Client : BaseUser
     {
-        public IList<Enterprise> ? Enterprises { get; set; }
     }
 }
