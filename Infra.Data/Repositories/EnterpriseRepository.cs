@@ -13,9 +13,9 @@ namespace Infra.Data.Repositories
 
         public bool IsUnique(EnterpriseDTOUpdate enterprise)
         {
-            return !_context.Enterprises.Any(e =>
-                (e.Cnpj == enterprise.Cnpj || e.Name == enterprise.Name) &&
-                e.Id != enterprise.Id);
+            return !_context.Enterprises.Any(ent =>
+                (ent.Cnpj == enterprise.Cnpj || ent.Name == enterprise.Name) &&
+                ent.Id != enterprise.Id);
         }
 
         public bool CnpjExists(string cnpj, long? ignoreId = null)

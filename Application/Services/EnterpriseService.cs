@@ -12,22 +12,26 @@ namespace Application.Services
         public EnterpriseService(IEnterpriseRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
+        public Enterprise? GetById(long id)
+        {
+            return _repository.GetById<Enterprise>(id);
+        }
 
-        public bool Create(EnterpriseDTO dto, out List<ErrorMessage> messages)
+        public Enterprise? Create(EnterpriseDTO dto, out List<ErrorMessage> messages)
         {
             if (!Validate(dto, out messages, _repository))
-                return false;
+                return null;
 
             try
             {
                 Enterprise entity = _mapper.Map<Enterprise>(dto);
                 _repository.Create(entity);
-                return true;
+                return entity;
             }
             catch
             {
                 messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar a empresa"));
-                return false;
+                return null;
             }
         }
 
@@ -51,10 +55,12 @@ namespace Application.Services
                 enterpriseEntity.PlanId = entity.PlanId;
                 enterpriseEntity.Address = entity.address;
                 _repository.Update(enterpriseEntity);
+                return;
             }
             catch (Exception ex)
             {
                 messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar o cliente"));
+                return;
             }
         }
 
@@ -74,6 +80,13 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("CNPJ", "O CNPJ da empresa é obrigatório."));
                 isValid = false;
             }
+
+            else if (!ValidateCnpj(enterprise.Cnpj))
+            {
+                messages.Add(new ErrorMessage("CNPJ", "CNPJ inválido."));
+                isValid = false;
+            }
+
             else
             {
                 var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
@@ -90,7 +103,7 @@ namespace Application.Services
                 isValid = false;
             }
 
-           return isValid;
+            return isValid;
         }
 
         public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
@@ -115,12 +128,19 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ da empresa é obrigatório."));
                 isValid = false;
             }
+
+            else if (!ValidateCnpj(enterprise.Cnpj))
+            {
+                messages.Add(new ErrorMessage("CNPJ", "CNPJ inválido."));
+                isValid = false;
+            }
+
             else
             {
                 var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault(e => e.Id != enterprise.Id);
 
                 if (existing != null)
-                { 
+                {
                     messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
                     isValid = false;
                 }
@@ -133,6 +153,62 @@ namespace Application.Services
             }
 
             return isValid;
+        }
+
+        public static bool ValidateCnpj(string cnpj)
+        {
+            ReadOnlySpan<char> cnpjSpan = cnpj;
+            Span<int> digits = stackalloc int[14];
+            int count = 0;
+
+            foreach (char cnpjNum in cnpjSpan)
+            {
+                if (char.IsDigit(cnpjNum))
+                {
+                    if (count >= 14) return false;
+                    digits[count++] = cnpjNum - '0';
+                }
+            }
+
+            if (count != 14) return false;
+
+            bool allSame = true;
+            for (int i = 1; i < 14; i++)
+            {
+                if (digits[i] != digits[0])
+                {
+                    allSame = false;
+                    break;
+                }
+            }
+
+            if (allSame) return false;
+
+            static int CalculateCheckDigit(ReadOnlySpan<int> digits, int startWeight)
+            {
+                int sum = 0;
+                int weight = startWeight;
+
+                for (int i = 0; i < digits.Length; i++)
+                {
+                    sum += digits[i] * weight;
+                    weight--;
+
+                    if (weight < 2)
+                    {
+                        weight = 9;
+                    }
+                }
+
+                int rest = sum % 11;
+                return (rest < 2) ? 0 : 11 - rest;
+            }
+
+            int digitCheck1 = CalculateCheckDigit(digits.Slice(0, 12), 5);
+            if (digitCheck1 != digits[12]) return false;
+
+            int digitCheck2 = CalculateCheckDigit(digits.Slice(0, 13), 6);
+            return digitCheck2 == digits[13];
         }
     }
 }

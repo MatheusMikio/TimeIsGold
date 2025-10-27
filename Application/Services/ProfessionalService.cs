@@ -13,10 +13,6 @@ namespace Application.Services
         public ProfessionalService(IProfessionalRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
-        public Professional? GetById(long id)
-        {
-            return _repository.GetById<Professional>(id);
-        }
 
         public bool Create(ProfessionalDTO professionalDTO, out List<ErrorMessage> messages)
         {
@@ -28,6 +24,7 @@ namespace Application.Services
             try
             {
                 Professional entity = _mapper.Map<Professional>(professionalDTO);
+                entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(professionalDTO.Password); // HASH
                 _repository.Create(entity);
                 return true;
             }
@@ -54,12 +51,16 @@ namespace Application.Services
                 try
                 {
                     professionalEntity.Name = entity.Name;
-                    professionalEntity.Cpf = entity.Cpf;
                     professionalEntity.Email = entity.Email;
-                    professionalEntity.Password = entity.Password;
                     professionalEntity.EnterpriseId = entity.EnterpriseId;
                     professionalEntity.Type = (ProfessionalType)entity.Type;
                     professionalEntity.Function = entity.Function;
+
+                    if (!string.IsNullOrWhiteSpace(entity.Password))
+                    {
+                        professionalEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password);
+                    }
+
                     _repository.Update(professionalEntity);
                 }
                 catch
@@ -67,6 +68,10 @@ namespace Application.Services
                     messages.Add(new ErrorMessage("Sistema", "Erro ao atualizar profissional"));
                 }
             }
+        }
+        public bool VerifyPassword(Professional professionalEntity, string plainPassword)
+        {
+            return BCrypt.Net.BCrypt.Verify(plainPassword, professionalEntity.PasswordHash);
         }
         public static bool Validate(ProfessionalDTO professional, out List<ErrorMessage> messages, IProfessionalRepository repository)
         {

@@ -10,20 +10,19 @@ namespace TimeIsGold.Controllers
     [ApiController]
     public class EnterpriseController : BaseController<EnterpriseDTOOutput, IEnterpriseService>
     {
-        private readonly IEnterpriseService _service;
 
         public EnterpriseController(IEnterpriseService service) : base(service)
         {
-            _service = service;
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] EnterpriseDTO enterpriseDTO)
         {
-            if (_service.Create(enterpriseDTO, out List<ErrorMessage> errors))
-                return CreatedAtAction(nameof(Create), enterpriseDTO);
+            var enterprise = _service.Create(enterpriseDTO, out List<ErrorMessage> errors);
+            if (enterprise != null)
+                return Ok(enterprise);
 
-            return UnprocessableEntity(errors);
+            return NotFound();
         }
 
         [HttpPut]
@@ -34,6 +33,16 @@ namespace TimeIsGold.Controllers
             if (errors.Count == 0) return NoContent();
 
             return BadRequest(errors);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(long id)
+        {
+            var enterprise = _service.GetById(id);
+
+            if (enterprise != null) return Ok(enterprise);
+
+            return BadRequest();
         }
     }
 }
