@@ -6,7 +6,9 @@ using Domain.Ports.Scheduling;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,25 +16,34 @@ namespace Application.Services
 {
     //private readonly IClientRepository _clientRepository;
     //private readonly IProfessionalRepository _professionalRepository;
+    //private readonly IEnterpriseRepository _enterpriseRepository;
     public class SchedulingService : BaseService<SchedulingDTO, Scheduling, ISchedulingRepository>, ISchedulingService
     {
         public SchedulingService(
             ISchedulingRepository repository,
-            IMapper mapper/*
+            IMapper mapper/*,
             IClientRepository clientRepository,
-            IProfessionalRepository professionalRepository*/
+            IProfessionalRepository professionalRepository
+            IEnterpriseRepository enterpriseRepository*/
         ) : base(
             repository,
             mapper
             )
         {
             /*_clientRepository = clientRepository
-             _professionalRepository = professionalRepository*/
+             _professionalRepository = professionalRepository
+            _enterpriseRepository = enterpriseRepository;*/
         }
 
         public bool Create(SchedulingDTO schedulingDTO, out List<ErrorMessage> messages)
         {
-            bool valid = Validate(schedulingDTO, out messages, _repository/*, _clientRepository, _professionalRepository*/);
+            bool valid = Validate(schedulingDTO,
+                out messages, 
+                _repository/*,
+                *IClientRepository clientRepository,
+             *  IProfessionalRepository professionalRepository,
+             *  IEnterpriseRepository enterpriseRepository*/
+            );
 
             if (valid)
             {
@@ -53,38 +64,30 @@ namespace Application.Services
 
         public void Update(SchedulingDTOUpdate schedulingDTO, out List<ErrorMessage> messages)
         {
-            bool valid = ValidateUpdate(schedulingDTO, out messages, _repository/*, _clientRepository, _professionalRepository*/);
+            bool valid = ValidateUpdate(schedulingDTO,
+                out messages,
+                _repository/*,
+                *IClientRepository clientRepository,
+                *IProfessionalRepository professionalRepository,
+                *IEnterpriseRepository enterpriseRepository*/);
 
             if (valid)
             {
-                Scheduling ? schedulingDb = _repository.GetById<Scheduling>(schedulingDTO.Id);
-                if (schedulingDb == null)
-                {
-                    messages.Add(new ErrorMessage("Agendamento", "Agendamento não encontrado"));
-                    return;
-                }
+                Scheduling schedulingDb = _repository.GetById<Scheduling>(schedulingDTO.Id);
+                //Professional professionalDb = professionalRepository.GetById<Professional>(schedulingDTO.ProfessionalId);
 
-                /*Professional ? professionalDb = _professionalRepository.GetById<Professional>(scheduling.ProfessionalId);
-                if (professionalDb == null)
-                {
-                    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
-                    return;
-                }
+                //Client clientDb = clientRepository.GetById<Client>(schedulingDTO.ClientId);
 
-                Client ? clientDb = _clientRepository.GetById<Client>(scheduling.ClientId);
-                if (clientDb == null)
-                {
-                    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-                    return;
-                }*/
-
+                //Enterprise enterpriseDb = enterpriseRepository.GetById<Enterprise>(schedulingDTO.EnterpriseId);
 
                 try
                 {
                     //schedulingDb.Client = clientDb;
-                    //schedulingDb.ClientId = schedulingDTO.ClientId;
+                    schedulingDb.ClientId = schedulingDTO.ClientId;
                     //schedulingDb.Professional = professionalDb;
-                    //schedulingDb.ProfessionalId = schedulingDTO.ProfessionalId;
+                    schedulingDb.ProfessionalId = schedulingDTO.ProfessionalId;
+                    //schedulingDb.Enterprise = enterpriseDb;
+                    schedulingDb.EnterpriseId = schedulingDTO.EnterpriseId;
                     schedulingDb.ScheduledDate = schedulingDTO.ScheduledDate;
                     schedulingDb.Status = (Status)schedulingDTO.Status;
                     schedulingDb.ChangedAt = DateTime.UtcNow;
@@ -102,29 +105,93 @@ namespace Application.Services
             SchedulingDTO scheduling,
             out List<ErrorMessage> messages,
             ISchedulingRepository repository/*,
-            IClientRepository clientRepository,
-            IProfessionalRepository professionalRepository*/
+            *IClientRepository clientRepository,
+            *IProfessionalRepository professionalRepository,
+            *IEnterpriseRepository enterpriseRepository*/
         )
         {
-            throw new NotImplementedException();
+            ValidationContext validationContext = new(scheduling);
+            List<ValidationResult> errors = new();
+            bool validation = Validator.TryValidateObject(scheduling, validationContext, errors, true);
+
+            messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
+            //if (professionalDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+            //    return false;
+            //}
+
+            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            //if (clientDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+            //    return false;
+            //}
+
+            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            //if (enterpriseDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+            //    return false;
+            //}
+
+            return validation;
         }
 
         public static bool ValidateUpdate(
             SchedulingDTOUpdate scheduling,
             out List<ErrorMessage> messages,
             ISchedulingRepository repository/*,
-            IClientRepository clientRepository,
-            IProfessionalRepository professionalRepository*/
+            *IClientRepository clientRepository,
+            *IProfessionalRepository professionalRepository,
+            *IEnterpriseRepository enterpriseRepository*/
+
         )
         {
-            throw new NotImplementedException();
+            ValidationContext validationContext = new(scheduling);
+            List<ValidationResult> errors = new();
+            bool validation = Validator.TryValidateObject(scheduling, validationContext, errors, true);
+
+            messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            Scheduling ? schedulingDb = repository.GetById<Scheduling>(scheduling.Id);
+            if (schedulingDb == null)
+            {
+                messages.Add(new ErrorMessage("Agendamento", "Agendamento não encontrado"));
+                return false;
+            }
+
+            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
+            //if (professionalDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+            //    return false;
+            //}
+
+            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            //if (clientDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+            //    return false;
+            //}
+
+            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            //if (enterpriseDb == null)
+            //{
+            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+            //    return false;
+            //}
+
+            return validation;
         }
 
         public int GetTodaySchedulings(long id, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
 
-            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
+            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
 
             if (enterprise == null)
             {
@@ -133,6 +200,18 @@ namespace Application.Services
             }
 
             return _repository.GetTodaySchedulings(id);
+        }
+
+        public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return 0;
+            }
+            return _repository.GetPendentsSchedulings(id);
         }
     }
 }

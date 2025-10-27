@@ -11,6 +11,7 @@ namespace Application.DTOs.Scheduling
     {
         public long ProfessionalId { get; set; }
         public long ClientId { get; set; }
+        public long EnterpriseId { get; set; }
         public long SchedulingTypeId { get; set; }
         public int Status { get; set; }
     }

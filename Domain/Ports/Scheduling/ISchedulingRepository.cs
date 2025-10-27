@@ -12,5 +12,6 @@ namespace Domain.Ports.Scheduling
     {
         public bool IsUnique(SchedulingDTOUpdate plan);
         public int GetTodaySchedulings(long id);
+        public int GetPendentsSchedulings(long id);
     }
 }

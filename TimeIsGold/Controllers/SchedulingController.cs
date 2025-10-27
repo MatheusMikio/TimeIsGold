@@ -15,10 +15,20 @@ namespace TimeIsGold.Controllers
         {
         }
 
-        [HttpGet("GetTodaySchedulings")]
+        [HttpGet("GetTodaySchedulings/{id}")]
         public IActionResult GetTodaySchedulings(long id)
         {
             int schedulings = _service.GetTodaySchedulings(id, out List<ErrorMessage> errors);
+
+            if (errors.Count == 0) return Ok(schedulings);
+
+            return BadRequest(errors);
+        }
+
+        [HttpGet("GetPendentsSchedulings/{id}")]
+        public IActionResult GetPendentsSchedulings(long id)
+        {
+            int schedulings = _service.GetPendentsSchedulings(id, out List<ErrorMessage> errors);
 
             if (errors.Count == 0) return Ok(schedulings);
 
