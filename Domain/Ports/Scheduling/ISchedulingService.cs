@@ -12,9 +12,11 @@ namespace Domain.Ports.Scheduling
 {
     public interface ISchedulingService : IBaseService
     {
+        public int GetTodaySchedulings(long id, out List<ErrorMessage> messages);
+        public List<SchedulingDTOOutput> GetWeekSchedulings(long id, out List<ErrorMessage> messages);
+        public List<SchedulingDTOOutput> GetMonthSchedulings(long id, out List<ErrorMessage> messages);
+        public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages);
         public bool Create(SchedulingDTO scheduling, out List<ErrorMessage> messages);
         public void Update(SchedulingDTOUpdate scheduling, out List<ErrorMessage> messages);
-        public int GetTodaySchedulings(long id, out List<ErrorMessage> messages);
-        public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages);
     }
 }

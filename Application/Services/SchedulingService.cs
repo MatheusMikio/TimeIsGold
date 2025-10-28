@@ -35,6 +35,32 @@ namespace Application.Services
             _enterpriseRepository = enterpriseRepository;*/
         }
 
+        public List<SchedulingDTOOutput> GetWeekSchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return new List<SchedulingDTOOutput>();
+            }
+            List<Scheduling> schedulings = _repository.GetWeekSchedulings(id);
+            return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
+        }
+
+        public List<SchedulingDTOOutput> GetMonthSchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return new List<SchedulingDTOOutput>();
+            }
+            List<Scheduling> schedulings = _repository.GetMonthSchedulings(id);
+            return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
+        }
+
         public bool Create(SchedulingDTO schedulingDTO, out List<ErrorMessage> messages)
         {
             bool valid = Validate(schedulingDTO,

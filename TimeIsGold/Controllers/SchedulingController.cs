@@ -25,6 +25,26 @@ namespace TimeIsGold.Controllers
             return BadRequest(errors);
         }
 
+        [HttpGet("GetWeekSchedulings/{id}")]
+        public IActionResult GetWeekSchedulings(long id)
+        {
+            List<SchedulingDTOOutput> schedulings = _service.GetWeekSchedulings(id, out List<ErrorMessage> errors);
+
+            if (errors.Count == 0) return Ok(schedulings);
+
+            return BadRequest(errors);
+        }
+
+        [HttpGet("GetMonthSchedulings/{id}")]
+        public IActionResult GetMonthSchedulings(long id)
+        {
+            List<SchedulingDTOOutput> schedulings = _service.GetMonthSchedulings(id, out List<ErrorMessage> errors);
+
+            if (errors.Count == 0) return Ok(schedulings);
+
+            return BadRequest(errors);
+        }
+
         [HttpGet("GetPendentsSchedulings/{id}")]
         public IActionResult GetPendentsSchedulings(long id)
         {
