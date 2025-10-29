@@ -43,6 +43,13 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
                 return new List<SchedulingDTOOutput>();
             }
+
+            if (!Enum.IsDefined(typeof(PeriodType), periodType))
+            {
+                messages.Add(new ErrorMessage("Período", "Periodo inválido"));
+                return new List<SchedulingDTOOutput>();
+            }
+
             List<Scheduling> schedulings = _repository.GetSchedulingsByPeriod(id, periodType);
             return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
         }
@@ -128,26 +135,32 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
+            //Professional? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
             //if (professionalDb == null)
             //{
             //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
             //    return false;
             //}
 
-            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            //Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
             //if (clientDb == null)
             //{
             //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
             //    return false;
             //}
 
-            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            //Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
             //if (enterpriseDb == null)
             //{
             //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
             //    return false;
             //}
+
+            if (scheduling.ScheduledDate < DateTime.UtcNow)
+            {
+                messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
+                return false;
+            }
 
             return validation;
         }
