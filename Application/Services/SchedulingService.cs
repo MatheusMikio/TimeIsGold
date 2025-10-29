@@ -34,30 +34,16 @@ namespace Application.Services
              _professionalRepository = professionalRepository
             _enterpriseRepository = enterpriseRepository;*/
         }
-
-        public List<SchedulingDTOOutput> GetWeekSchedulings(long id, out List<ErrorMessage> messages)
+        public List<SchedulingDTOOutput> GetSchedulingsByPeriod(long id, PeriodType periodType, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
-            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
+            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
             if (enterprise == null)
             {
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
                 return new List<SchedulingDTOOutput>();
             }
-            List<Scheduling> schedulings = _repository.GetWeekSchedulings(id);
-            return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
-        }
-
-        public List<SchedulingDTOOutput> GetMonthSchedulings(long id, out List<ErrorMessage> messages)
-        {
-            messages = new List<ErrorMessage>();
-            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
-            if (enterprise == null)
-            {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
-                return new List<SchedulingDTOOutput>();
-            }
-            List<Scheduling> schedulings = _repository.GetMonthSchedulings(id);
+            List<Scheduling> schedulings = _repository.GetSchedulingsByPeriod(id, periodType);
             return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
         }
 

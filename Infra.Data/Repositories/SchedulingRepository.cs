@@ -40,25 +40,30 @@ namespace Infra.Data.Repositories
             );
         }
 
-        public List<Scheduling> GetWeekSchedulings(long id)
+        public List<Scheduling> GetSchedulingsByPeriod(long id, PeriodType periodType)
         {
             DateTime today = DateTime.Today;
-            DateTime week = today.AddDays(8);
+            DateTime startDate = today;
+            DateTime endDate = today;
 
-            return _context.Schedulings.Where(s => s.EnterpriseId == id &&
-                s.ScheduledDate >= today &&
-                s.ScheduledDate < week
-            ).ToList();
-        }
+            if (periodType == PeriodType.Week)
+            {
+                int diff = (int)today.DayOfWeek;
+                startDate = today.AddDays(-diff);
+                endDate = startDate.AddDays(7);
+            }
 
-        public List<Scheduling> GetMonthSchedulings(long id)
-        {
-            DateTime today = DateTime.Today;
-            DateTime month = today.AddDays(31);
-            return _context.Schedulings.Where(s => s.EnterpriseId == id &&
-                s.ScheduledDate >= today &&
-                s.ScheduledDate < month
-            ).ToList();
+            if (periodType == PeriodType.Month)
+            {
+                startDate = new DateTime(today.Year, today.Month, 1);
+                endDate = startDate.AddMonths(1);
+            }
+
+            return _context.Schedulings
+                .Where(s => s.EnterpriseId == id &&
+                            s.ScheduledDate >= startDate &&
+                            s.ScheduledDate < endDate)
+                .ToList();
         }
 
         public int GetPendentsSchedulings(long id)

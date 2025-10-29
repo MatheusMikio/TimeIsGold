@@ -2,6 +2,7 @@
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
 using Domain.Ports.Scheduling;
+using Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,20 +26,10 @@ namespace TimeIsGold.Controllers
             return BadRequest(errors);
         }
 
-        [HttpGet("GetWeekSchedulings/{id}")]
-        public IActionResult GetWeekSchedulings(long id)
+        [HttpGet("GetPeriodSchedulings/{id}")]
+        public IActionResult GetMonthSchedulings(long id, PeriodType periodType)
         {
-            List<SchedulingDTOOutput> schedulings = _service.GetWeekSchedulings(id, out List<ErrorMessage> errors);
-
-            if (errors.Count == 0) return Ok(schedulings);
-
-            return BadRequest(errors);
-        }
-
-        [HttpGet("GetMonthSchedulings/{id}")]
-        public IActionResult GetMonthSchedulings(long id)
-        {
-            List<SchedulingDTOOutput> schedulings = _service.GetMonthSchedulings(id, out List<ErrorMessage> errors);
+            List<SchedulingDTOOutput> schedulings = _service.GetSchedulingsByPeriod(id, periodType, out List<ErrorMessage> errors);
 
             if (errors.Count == 0) return Ok(schedulings);
 

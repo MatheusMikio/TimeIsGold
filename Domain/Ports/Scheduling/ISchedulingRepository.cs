@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs.Scheduling;
 using Domain.Ports.Base;
+using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,7 @@ namespace Domain.Ports.Scheduling
     {
         public bool IsUnique(SchedulingDTOUpdate plan);
         public int GetTodaySchedulings(long id);
-        public List<Entities.Scheduling> GetWeekSchedulings(long id);
-        public List<Entities.Scheduling> GetMonthSchedulings(long id);
+        public List<Entities.Scheduling> GetSchedulingsByPeriod(long id, PeriodType periodType);
         public int GetPendentsSchedulings(long id);
         
     }
