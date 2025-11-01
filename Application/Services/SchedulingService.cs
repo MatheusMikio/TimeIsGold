@@ -93,19 +93,10 @@ namespace Application.Services
             if (valid)
             {
                 Scheduling schedulingDb = _repository.GetById<Scheduling>(schedulingDTO.Id);
-                //Professional professionalDb = professionalRepository.GetById<Professional>(schedulingDTO.ProfessionalId);
-
-                //Client clientDb = clientRepository.GetById<Client>(schedulingDTO.ClientId);
-
-                //Enterprise enterpriseDb = enterpriseRepository.GetById<Enterprise>(schedulingDTO.EnterpriseId);
-
                 try
                 {
-                    //schedulingDb.Client = clientDb;
                     schedulingDb.ClientId = schedulingDTO.ClientId;
-                    //schedulingDb.Professional = professionalDb;
                     schedulingDb.ProfessionalId = schedulingDTO.ProfessionalId;
-                    //schedulingDb.Enterprise = enterpriseDb;
                     schedulingDb.EnterpriseId = schedulingDTO.EnterpriseId;
                     schedulingDb.ScheduledDate = schedulingDTO.ScheduledDate;
                     schedulingDb.Status = (Status)schedulingDTO.Status;
@@ -135,21 +126,21 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            //Professional? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
+            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
             //if (professionalDb == null)
             //{
             //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
             //    return false;
             //}
 
-            //Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
             //if (clientDb == null)
             //{
             //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
             //    return false;
             //}
 
-            //Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
             //if (enterpriseDb == null)
             //{
             //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
