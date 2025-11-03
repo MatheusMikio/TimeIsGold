@@ -185,7 +185,7 @@ namespace Application.Services
 
             if (schedulingDb)
             {
-                messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
+                messages.Add(new ErrorMessage("Data", "Não é possivel criar um agendamento nesse horário."));
                 return false;
             }
             return validation;
