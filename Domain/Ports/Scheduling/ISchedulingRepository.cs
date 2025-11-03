@@ -11,10 +11,10 @@ namespace Domain.Ports.Scheduling
 {
     public interface ISchedulingRepository : IBaseRepository
     {
-        public bool IsUnique(SchedulingDTOUpdate plan);
         public int GetTodaySchedulings(long id);
+        public bool GetSchedulingByDate(long professionalId, long clientId, DateTime scheduledDate);
         public List<Entities.Scheduling> GetSchedulingsByPeriod(long id, PeriodType periodType);
         public int GetPendentsSchedulings(long id);
-        
+        public bool IsUnique(SchedulingDTOUpdate plan);
     }
 }

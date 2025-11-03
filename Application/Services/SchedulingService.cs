@@ -34,6 +34,34 @@ namespace Application.Services
              _professionalRepository = professionalRepository
             _enterpriseRepository = enterpriseRepository;*/
         }
+
+        public int GetTodaySchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+
+            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
+
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return 0;
+            }
+
+            return _repository.GetTodaySchedulings(id);
+        }
+
+        public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
+            if (enterprise == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return 0;
+            }
+            return _repository.GetPendentsSchedulings(id);
+        }
+
         public List<SchedulingDTOOutput> GetSchedulingsByPeriod(long id, PeriodType periodType, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
@@ -153,6 +181,13 @@ namespace Application.Services
                 return false;
             }
 
+            bool schedulingDb = repository.GetSchedulingByDate(scheduling.ProfessionalId, scheduling.ClientId, scheduling.ScheduledDate);
+
+            if (schedulingDb)
+            {
+                messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
+                return false;
+            }
             return validation;
         }
 
@@ -200,34 +235,19 @@ namespace Application.Services
             //    return false;
             //}
 
+            if (scheduling.ScheduledDate < DateTime.UtcNow)
+            {
+                messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
+                return false;
+            }
+
+            if (!repository.IsUnique(scheduling))
+            {
+                messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
+                return false;
+            }
+
             return validation;
-        }
-
-        public int GetTodaySchedulings(long id, out List<ErrorMessage> messages)
-        {
-            messages = new List<ErrorMessage>();
-
-            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
-
-            if (enterprise == null)
-            {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
-                return 0;
-            }
-
-            return _repository.GetTodaySchedulings(id);
-        }
-
-        public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages)
-        {
-            messages = new List<ErrorMessage>();
-            Enterprise ? enterprise = _repository.GetById<Enterprise>(id);
-            if (enterprise == null)
-            {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
-                return 0;
-            }
-            return _repository.GetPendentsSchedulings(id);
         }
     }
 }

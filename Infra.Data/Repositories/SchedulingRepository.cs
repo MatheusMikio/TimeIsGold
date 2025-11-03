@@ -19,13 +19,16 @@ namespace Infra.Data.Repositories
 
         public bool IsUnique(SchedulingDTOUpdate scheduling)
         {
+            DateTime startRange = scheduling.ScheduledDate.AddMinutes(-30);
+            DateTime endRange = scheduling.ScheduledDate.AddMinutes(30);
+
             return !_context.Schedulings.Any(
-               s => s.Id != scheduling.Id &&
-               (
-                   s.ProfessionalId == scheduling.ProfessionalId &&
-                   s.ClientId == scheduling.ClientId &&
-                   s.ScheduledDate == scheduling.ScheduledDate
-               )
+                s => s.Id != scheduling.Id &&
+                (
+                    (s.ProfessionalId == scheduling.ProfessionalId || s.ClientId == scheduling.ClientId) &&
+                    s.ScheduledDate >= startRange &&
+                    s.ScheduledDate < endRange
+                )
             );
         }
 
@@ -37,6 +40,19 @@ namespace Infra.Data.Repositories
             return _context.Schedulings.Count(s => s.EnterpriseId == id &&
                 s.ScheduledDate >= today &&
                 s.ScheduledDate < tomorrow
+            );
+        }
+
+        public bool GetSchedulingByDate(long professionalId, long clientId, DateTime scheduledDate)
+        {
+            DateTime startRange = scheduledDate.AddMinutes(-30);
+            DateTime endRange = scheduledDate.AddMinutes(30);
+
+            return _context.Schedulings.Any(
+                s => s.ProfessionalId == professionalId &&
+                     s.ClientId == clientId &&
+                     s.ScheduledDate >= startRange &&
+                     s.ScheduledDate < endRange
             );
         }
 
