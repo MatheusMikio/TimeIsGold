@@ -48,6 +48,8 @@ namespace TimeIsGold
             builder.Services.AddScoped<IProfessionalService, ProfessionalService>();
             builder.Services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
 
+            builder.Services.AddScoped<LoginService>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -56,8 +58,6 @@ namespace TimeIsGold
 
             if (app.Environment.IsDevelopment())
             {
-                //aqui
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

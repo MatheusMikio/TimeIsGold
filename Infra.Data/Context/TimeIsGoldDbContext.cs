@@ -41,7 +41,14 @@ namespace Infrastructure.Data
 
             // Marcar Address como tipo complexo (owned)
             modelBuilder.Entity<Enterprise>()
-                .OwnsOne(e => e.Address);
+                .OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.Street).HasColumnName("Address_Street");
+                    address.Property(a => a.Number).HasColumnName("Address_Number");
+                    address.Property(a => a.City).HasColumnName("Address_City");
+                    address.Property(a => a.State).HasColumnName("Address_State");
+                    address.Property(a => a.Country).HasColumnName("Address_Country");
+                });
 
             // Adicionando relacionamentos para Scheduling
             modelBuilder.Entity<Scheduling>()

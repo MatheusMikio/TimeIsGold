@@ -1,9 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Ports.Client;
+using Domain.ValueObjects;
 using Infrastructure.Data;
-using System.Linq;
-using System.Collections.Generic;
-using Infra.Data.Repositories;
 
 namespace Infra.Data.Repositories
 {
@@ -25,14 +23,8 @@ namespace Infra.Data.Repositories
                 ? _context.Clients.Any(client => client.Cpf == cpf && client.Id != ignoreId.Value)
                 : _context.Clients.Any(client => client.Cpf == cpf);
         }
-        public Client? GetById(long id)
-        {
-            return _context.Clients.Find(id);
-        }
 
-        public List<Client> GetAll()
-        {
-            return _context.Clients.ToList();
-        }
+        public Client? GetByEmail(string email)
+    => _context.Clients.FirstOrDefault(p => p.Email == email);
     }
 }

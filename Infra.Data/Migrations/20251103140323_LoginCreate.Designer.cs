@@ -3,6 +3,7 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infra.Data.Migrations
 {
     [DbContext(typeof(TimeIsGoldDbContext))]
-    partial class TimeIsGoldDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251103140323_LoginCreate")]
+    partial class LoginCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,13 +146,6 @@ namespace Infra.Data.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("About")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ActuationTime")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("ChangedAt")
                         .HasColumnType("timestamp with time zone");
@@ -299,28 +295,23 @@ namespace Infra.Data.Migrations
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Address_City");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Address_Country");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Number")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Address_Number");
+                                .HasColumnType("text");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Address_State");
+                                .HasColumnType("text");
 
                             b1.Property<string>("Street")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Address_Street");
+                                .HasColumnType("text");
 
                             b1.HasKey("EnterpriseId");
 

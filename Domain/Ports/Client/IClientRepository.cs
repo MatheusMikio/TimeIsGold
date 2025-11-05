@@ -1,5 +1,5 @@
 ﻿using Domain.Ports.Base;
-using Domain.Entities;
+using Domain.ValueObjects;
 
 namespace Domain.Ports.Client
 {
@@ -7,7 +7,6 @@ namespace Domain.Ports.Client
     {
         bool EmailExists(string email, long? ignoreId = null);
         bool CpfExists(string cpf, long? ignoreId = null);
-        Entities.Client GetById(long id);
-        List<Entities.Client> GetAll();
+        Entities.Client? GetByEmail(string email);
     }
 }

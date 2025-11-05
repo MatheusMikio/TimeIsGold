@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.DTOs.Client;
+﻿using Application.DTOs.Client;
 using Domain.DTOs.Client;
 using Domain.Entities;
 using Domain.Ports.Base;

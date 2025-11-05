@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs.Professional;
 using Domain.Entities;
 using Domain.Ports.Professional;
+using Domain.ValueObjects;
 using Infrastructure.Data;
 
 namespace Infra.Data.Repositories
@@ -11,30 +12,18 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool CpfExists(string cpf)
+        public bool CpfExists(string cpf, long? ignoreId = null)
         {
-            return _context.Professionals.Any(professional => professional.Cpf == cpf);
+            return ignoreId.HasValue
+                ? _context.Professionals.Any(p => p.Cpf == cpf && p.Id != ignoreId.Value)
+                : _context.Professionals.Any(p => p.Cpf == cpf);
         }
 
-        public bool EmailExists(string email)
+        public bool EmailExists(string email, long? ignoreId = null)
         {
-            return _context.Professionals.Any(professional => professional.Email == email);
-        }
-
-        //se email existir e nao for o mesmo do id
-        public bool EmailIdExists(string email, long id)
-        {
-            return _context.Professionals.Any(professional => professional.Email == email && professional.Id != id);
-        }
-
-        public Professional? GetById(long id)
-        {
-            return _context.Professionals.Find(id);
-        }
-
-        public List<Professional> GetAll()
-        {
-            return _context.Professionals.ToList();
+            return ignoreId.HasValue
+                ? _context.Professionals.Any(p => p.Email == email && p.Id != ignoreId.Value)
+                : _context.Professionals.Any(p => p.Email == email);
         }
 
         public bool IsUnique(ProfessionalDTOUpdate professional)
@@ -42,24 +31,10 @@ namespace Infra.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public bool CpfExists(string cpf, long id)
-        {
-            throw new NotImplementedException();
-        }
+        public Professional? GetByEmail(string email)
+            => _context.Professionals.FirstOrDefault(p => p.Email == email);
 
-        public bool CpfExists(string cpf, int ignoreId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool EmailExists(string email, long id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool EmailExists(string email, int ignoreId)
-        {
-            throw new NotImplementedException();
-        }
+        public Professional? GetByEmailAndType(string email, ProfessionalType type)
+            => _context.Professionals.FirstOrDefault(p => p.Email == email && p.Type == type);
     }
 }

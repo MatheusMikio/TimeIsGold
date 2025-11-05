@@ -9,6 +9,7 @@ namespace Domain.DTOs.Base
 {
     public abstract class BaseUserDTOOutput : BaseEntityDTO
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Cpf { get; set; }
         public string Email { get; set; }

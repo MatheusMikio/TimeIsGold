@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Application.DTOs.Professional;
 using AutoMapper;
 using Domain.DTOs.Professional;
@@ -20,17 +21,25 @@ namespace Application.Services
 
             if (!valid)
                 return false;
-            
+
             try
             {
                 Professional entity = _mapper.Map<Professional>(professionalDTO);
                 entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(professionalDTO.Password); // HASH
+                professionalDTO.Password = null;
                 _repository.Create(entity);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar o profissional"));
+
+                var errorMessage = ex.Message;
+
+                //Pega o erro interno do EF
+                if (ex.InnerException != null)
+                    errorMessage += $" | Detalhe: {ex.InnerException.Message}";
+
+                messages.Add(new ErrorMessage("Sistema", $"Erro inesperado ao salvar o profissional: {errorMessage}"));
                 return false;
             }
         }
@@ -50,17 +59,20 @@ namespace Application.Services
 
                 try
                 {
+                    // Atualiza os campos
                     professionalEntity.Name = entity.Name;
                     professionalEntity.Email = entity.Email;
                     professionalEntity.EnterpriseId = entity.EnterpriseId;
                     professionalEntity.Type = (ProfessionalType)entity.Type;
                     professionalEntity.Function = entity.Function;
+                    professionalEntity.About = entity.About;
+                    professionalEntity.ActuationTime = entity.ActuationTime;
 
                     if (!string.IsNullOrWhiteSpace(entity.Password))
                     {
                         professionalEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password);
+                        entity.Password = null;
                     }
-
                     _repository.Update(professionalEntity);
                 }
                 catch
@@ -80,6 +92,14 @@ namespace Application.Services
             bool validation = Validator.TryValidateObject(professional, context, results, true);
 
             messages = results.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
+
+            //Chamando validações
+            if (!ValidateName(professional.Name, messages)) validation = false;
+            if (!ValidatePhone(professional.Phone, messages)) validation = false;
+            if (!ValidatePassword(professional.Password, messages)) validation = false;
+            if (!ValidateFunction(professional.Function, messages)) validation = false;
+            if (!ValidateAbout(professional.About, messages)) validation = false;
+            if (!ValidateActuationTime(professional.ActuationTime, messages)) validation = false;
 
             //cpf duplicado
             if (repository.CpfExists(professional.Cpf))
@@ -112,7 +132,7 @@ namespace Application.Services
             return validation;
         }
 
-        public static bool ValidateUpdate(ProfessionalDTOUpdate professional, out List<ErrorMessage> messages,IProfessionalRepository repository)
+        public static bool ValidateUpdate(ProfessionalDTOUpdate professional, out List<ErrorMessage> messages, IProfessionalRepository repository)
         {
             ValidationContext context = new(professional);
             List<ValidationResult> results = new();
@@ -120,18 +140,26 @@ namespace Application.Services
 
             messages = results.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            Professional? existing = repository.GetById<Professional>(professional.Id);
-            if (existing == null)
+            Professional? professionalDb = repository.GetById<Professional>(professional.Id);
+
+            if (professionalDb == null)
             {
                 messages.Add(new ErrorMessage("Professional", "Profissional não encontrado."));
-                validation = false;
-
+                return false;
             }
 
+            if (!ValidateFunction(professional.Function, messages)) validation = false;
+            if (!ValidateAbout(professional.About, messages)) validation = false;
+            if (!ValidateActuationTime(professional.ActuationTime, messages)) validation = false;
+
             //evita duplicações ao atualizar
+            if (!ValidateName(professional.Name, messages)) validation = false;
+            if (!ValidatePhone(professional.Phone, messages)) validation = false;
+
+            // Checa duplicidade ignorando o próprio Id
             if (repository.CpfExists(professional.Cpf, professional.Id))
             {
-                messages.Add(new ErrorMessage("Cpf", "Cpf já cadastrado."));
+                messages.Add(new ErrorMessage("Cpf", "Já existe outro profissional com este CPF"));
                 validation = false;
             }
 
@@ -141,12 +169,115 @@ namespace Application.Services
                 validation = false;
             }
 
+            // Senha só se o usuário quiser trocar
+            if (!string.IsNullOrWhiteSpace(professional.Password))
+            {
+                if (!ValidatePassword(professional.Password, messages)) validation = false;
+            }
+
             if (!Enum.IsDefined(typeof(ProfessionalType), professional.Type))
             {
                 messages.Add(new ErrorMessage("Type", "Tipo de profissional inválido."));
                 validation = false;
             }
             return validation;
+        }
+
+        private static bool ValidateName(string name, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                messages.Add(new ErrorMessage("Name", "O nome é obrigatório."));
+                return false;
+            }
+            if (name.Length < 3 || name.Length > 100)
+            {
+                messages.Add(new ErrorMessage("Name", "O nome do profissional deve ter entre 3 e 100 caracteres."));
+                return false;
+            }
+            if (!Regex.IsMatch(name, @"^[a-zA-ZÀ-ÿ\s]+$"))
+            {
+                messages.Add(new ErrorMessage("Name", "O nome deve conter apenas letras e espaços."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidatePhone(string phone, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                messages.Add(new ErrorMessage("Phone", "O telefone é obrigatório."));
+                return false;
+            }
+            if (!Regex.IsMatch(phone, @"^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$"))
+            {
+                messages.Add(new ErrorMessage("Phone", "O telefone fornecido é inválido. Use o formato (XX) XXXXX-XXXX."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidatePassword(string password, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                messages.Add(new ErrorMessage("Password", "A senha é obrigatória."));
+                return false;
+            }
+            if (password.Length < 8)
+            {
+                messages.Add(new ErrorMessage("Password", "A senha deve ter pelo menos 8 caracteres."));
+                return false;
+            }
+            if (!Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$"))
+            {
+                messages.Add(new ErrorMessage("Password", "A senha deve conter pelo menos uma letra maiúscula, minúscula e número."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidateFunction(string? function, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(function))
+            {
+                messages.Add(new ErrorMessage("Function", "A função do profissional é obrigatória."));
+                return false;
+            }
+
+            if (function.Length < 2 || function.Length > 50)
+            {
+                messages.Add(new ErrorMessage("Function", "A função deve ter entre 2 e 50 caracteres."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidateAbout(string? about, List<ErrorMessage> messages)
+        {
+            if (!string.IsNullOrWhiteSpace(about) && about.Length > 500)
+            {
+                messages.Add(new ErrorMessage("About", "O campo 'Sobre' deve ter no máximo 500 caracteres."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidateActuationTime(string actuationTime, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(actuationTime))
+            {
+                messages.Add(new ErrorMessage("ActuationTime", "O tempo de atuação é obrigatório."));
+                return false;
+            }
+
+            if (actuationTime.Length > 50)
+            {
+                messages.Add(new ErrorMessage("ActuationTime", "O tempo de atuação deve ter no máximo 50 caracteres."));
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace TimeIsGold.Controllers
         {
             var professional = _service.Create(professionalDTO, out List<ErrorMessage> errors);
             if (professional != false)
-                return Ok(professional);
+                return Ok("Profissional criado com sucesso!");
 
             return UnprocessableEntity(errors);
         }
@@ -31,6 +31,9 @@ namespace TimeIsGold.Controllers
             _service.Update(professional, out List<ErrorMessage> errors);
 
             if (errors.Count == 0) return NoContent();
+
+            if (errors.Any(e => e.Property == "Professional" && e.Message.Contains("não encontrado")))
+                return NotFound(errors);
 
             return BadRequest(errors);
         }

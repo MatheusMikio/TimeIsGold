@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TimeIsGold.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("enterprise-teste")]
     [ApiController]
     public class EnterpriseController : BaseController<EnterpriseDTOOutput, IEnterpriseService>
     {
@@ -16,13 +16,14 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] EnterpriseDTO enterpriseDTO)
+        public IActionResult Post([FromBody] EnterpriseDTO enterpriseDTO)
         {
+            Console.WriteLine("Entrou no Create");
             var enterprise = _service.Create(enterpriseDTO, out List<ErrorMessage> errors);
             if (enterprise != null)
                 return Ok(enterprise);
 
-            return NotFound();
+            return BadRequest(errors);
         }
 
         [HttpPut]
@@ -33,16 +34,6 @@ namespace TimeIsGold.Controllers
             if (errors.Count == 0) return NoContent();
 
             return BadRequest(errors);
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetById(long id)
-        {
-            var enterprise = _service.GetById(id);
-
-            if (enterprise != null) return Ok(enterprise);
-
-            return BadRequest();
         }
     }
 }

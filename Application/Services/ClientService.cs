@@ -4,7 +4,7 @@ using AutoMapper;
 using Domain.DTOs.Client;
 using Domain.Entities;
 using Domain.Ports.Client;
-using Application.Services;
+using System.Text.RegularExpressions;
 
 namespace Application.Services
 {
@@ -55,6 +55,8 @@ namespace Application.Services
                     clientEntity.Name = entity.Name;
                     clientEntity.Email = entity.Email;
                     clientEntity.Cpf = entity.Cpf;
+                    clientEntity.Phone = entity.Phone;
+                    clientEntity.PasswordHash = entity.Password;
                     _repository.Update(clientEntity);
                 }
                 catch (Exception ex)
@@ -87,6 +89,11 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("CPF", "CPF inválido."));
                 validation = false;
             }
+            //if (!ValidatePhone(client.Phone))
+            //{
+            //    messages.Add(new ErrorMessage("Ta errado sapoha"));
+            //    validation = false;
+            //}
 
             return validation;
         }
@@ -105,6 +112,16 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado."));
                 validation = false;
             }
+
+            if (!ValidateName(client.Name, messages)) validation = false;
+            if (!ValidatePhone(client.Phone, messages)) validation = false;
+
+            // Senha só se o usuário quiser trocar
+            if (!string.IsNullOrWhiteSpace(client.Password))
+            {
+                if (!ValidatePassword(client.Password, messages)) validation = false;
+            }
+
 
             if (!ValidateEmail(client.Email))
             {
@@ -183,10 +200,10 @@ namespace Application.Services
             return digits[10] == digitCheck2;
         }
 
-        private static string RemoveCpfMask(string cpf)
-        {
-            return new string(cpf.Where(char.IsDigit).ToArray());
-        }
+        //private static string RemoveCpfMask(string cpf)
+        //{
+        //    return new string(cpf.Where(char.IsDigit).ToArray());
+        //}
 
         public static bool ValidateEmail(string email)
         {
@@ -223,6 +240,61 @@ namespace Application.Services
                     return false;
             }
 
+            return true;
+        }
+
+        private static bool ValidateName(string name, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                messages.Add(new ErrorMessage("Name", "O nome é obrigatório."));
+                return false;
+            }
+            if (name.Length < 3 || name.Length > 100)
+            {
+                messages.Add(new ErrorMessage("Name", "O nome do profissional deve ter entre 3 e 100 caracteres."));
+                return false;
+            }
+            if (!Regex.IsMatch(name, @"^[a-zA-ZÀ-ÿ\s]+$"))
+            {
+                messages.Add(new ErrorMessage("Name", "O nome deve conter apenas letras e espaços."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidatePhone(string phone, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                messages.Add(new ErrorMessage("Phone", "O telefone é obrigatório."));
+                return false;
+            }
+            if (!Regex.IsMatch(phone, @"^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$"))
+            {
+                messages.Add(new ErrorMessage("Phone", "O telefone fornecido é inválido. Use o formato XX XXXXX-XXXX."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidatePassword(string password, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                messages.Add(new ErrorMessage("Password", "A senha é obrigatória."));
+                return false;
+            }
+            if (password.Length < 8)
+            {
+                messages.Add(new ErrorMessage("Password", "A senha deve ter pelo menos 8 caracteres."));
+                return false;
+            }
+            //if (!Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)$"))
+            //{
+            //    messages.Add(new ErrorMessage("Password", "A senha deve conter pelo menos uma letra maiúscula, minúscula e número."));
+            //    return false;
+            //}
             return true;
         }
     }

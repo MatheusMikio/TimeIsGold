@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Domain.DTOs.Enterprise
 {
@@ -13,6 +8,6 @@ namespace Domain.DTOs.Enterprise
         public string Name { get; set; }
         public string Cnpj { get; set; }
         public long PlanId { get; set; }
-        public Address address { get; set; }
+        public Address Address { get; set; }
     }
 }

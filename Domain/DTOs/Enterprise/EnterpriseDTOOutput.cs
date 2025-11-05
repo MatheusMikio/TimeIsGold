@@ -4,12 +4,7 @@ using Application.DTOs.Professional;
 using Application.DTOs.SchedulingType;
 using Domain.DTOs.Base;
 using Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Application.DTOs.Enterprise
 {

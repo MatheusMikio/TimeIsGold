@@ -1,5 +1,7 @@
 ﻿using Domain.DTOs.Enterprise;
 using Domain.Ports.Base;
+using Domain.Ports.Professional;
+using Domain.ValueObjects;
 
 namespace Domain.Ports.Enterprise
 {
@@ -7,7 +9,5 @@ namespace Domain.Ports.Enterprise
     {
         public bool IsUnique(EnterpriseDTOUpdate enterprise);
         bool CnpjExists(string cnpj, long? ignoreId = null);
-        Entities.Enterprise? GetById(long id);
-        List<Entities.Enterprise> GetAll();
     }
 }

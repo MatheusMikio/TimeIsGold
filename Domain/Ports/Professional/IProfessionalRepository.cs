@@ -1,16 +1,16 @@
 ﻿using Domain.DTOs.Professional;
 using Domain.Ports.Base;
+using Domain.ValueObjects;
+using Domain.Entities;
 
 namespace Domain.Ports.Professional
 {
     public interface IProfessionalRepository : IBaseRepository
     {
-        public bool IsUnique(ProfessionalDTOUpdate professional);
-        bool CpfExists(string cpf, long id);
-        bool CpfExists(string cpf, int ignoreId);
-        bool EmailExists(string email, long id);
-        bool EmailExists(string email, int ignoreId);
-        bool CpfExists(string cpf);
-        bool EmailExists(string email);
+        bool IsUnique(ProfessionalDTOUpdate professional);
+        bool EmailExists(string email, long? ignoreId = null);
+        bool CpfExists(string cpf, long? ignoreId = null);
+        Entities.Professional? GetByEmail(string email);
+        Entities.Professional? GetByEmailAndType(string email, ProfessionalType type);
     }
 }

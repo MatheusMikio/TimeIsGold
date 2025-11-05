@@ -17,8 +17,11 @@ namespace TimeIsGold.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ClientDTO clientDTO)
         {
-            if (_service.Create(clientDTO, out List<ErrorMessage> errors)) 
-                return CreatedAtAction(nameof(Create), clientDTO);
+            if (clientDTO == null)
+                return BadRequest("O corpo da requisição não pode ser vazio.");
+
+            if (_service.Create(clientDTO, out List<ErrorMessage> errors))
+                return Ok(clientDTO);
 
             return UnprocessableEntity(errors);
         }

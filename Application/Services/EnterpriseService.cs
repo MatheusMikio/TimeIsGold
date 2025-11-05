@@ -12,24 +12,25 @@ namespace Application.Services
         public EnterpriseService(IEnterpriseRepository repository, IMapper mapper) : base(repository, mapper)
         {
         }
-        public Enterprise? GetById(long id)
-        {
-            return _repository.GetById<Enterprise>(id);
-        }
 
         public Enterprise? Create(EnterpriseDTO dto, out List<ErrorMessage> messages)
         {
             if (!Validate(dto, out messages, _repository))
+            {
+                Console.WriteLine("Falhou na validação: " + string.Join(", ", messages.Select(m => m.Message)));
                 return null;
+            }
 
             try
             {
                 Enterprise entity = _mapper.Map<Enterprise>(dto);
                 _repository.Create(entity);
+                Console.WriteLine("Empresa criada com sucesso!");
                 return entity;
             }
             catch
             {
+                Console.WriteLine("Erro ao salvar no banco: ");
                 messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar a empresa"));
                 return null;
             }
@@ -53,7 +54,7 @@ namespace Application.Services
                 enterpriseEntity.Name = entity.Name;
                 enterpriseEntity.Cnpj = entity.Cnpj;
                 enterpriseEntity.PlanId = entity.PlanId;
-                enterpriseEntity.Address = entity.address;
+                enterpriseEntity.Address = entity.Address;
                 _repository.Update(enterpriseEntity);
                 return;
             }
@@ -77,13 +78,13 @@ namespace Application.Services
 
             if (string.IsNullOrEmpty(enterprise.Cnpj))
             {
-                messages.Add(new ErrorMessage("CNPJ", "O CNPJ da empresa é obrigatório."));
+                messages.Add(new ErrorMessage("Cnpj", "O CNPJ da empresa é obrigatório."));
                 isValid = false;
             }
 
             else if (!ValidateCnpj(enterprise.Cnpj))
             {
-                messages.Add(new ErrorMessage("CNPJ", "CNPJ inválido."));
+                messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
                 isValid = false;
             }
 
@@ -92,7 +93,7 @@ namespace Application.Services
                 var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
                 if (existing != null)
                 {
-                    messages.Add(new ErrorMessage("CNPJ", "O CNPJ informado já está em uso por outra empresa."));
+                    messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
                     isValid = false;
                 }
             }
@@ -102,7 +103,6 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
                 isValid = false;
             }
-
             return isValid;
         }
 
@@ -131,7 +131,7 @@ namespace Application.Services
 
             else if (!ValidateCnpj(enterprise.Cnpj))
             {
-                messages.Add(new ErrorMessage("CNPJ", "CNPJ inválido."));
+                messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
                 isValid = false;
             }
 
@@ -151,6 +151,12 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
                 isValid = false;
             }
+
+            //if (string.IsNullOrWhiteSpace(enterprise.Address) || enterprise.Address.Length < 5)
+            //{
+            //    messages.Add(new ErrorMessage("Address", "O endereço é obrigatório e deve ter pelo menos 5 caracteres."));
+            //    isValid = false;
+            //}
 
             return isValid;
         }

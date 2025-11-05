@@ -29,7 +29,7 @@ namespace Application.Mapping
             CreateMap<Scheduling, SchedulingDTOOutput>();
             CreateMap<SchedulingType, SchedulingTypeDTOOutput>();
 
-            //Mapeamento de Entity para DTO Input
+            //Mapeamento de DTO para entidade Input
             CreateMap<ClientDTO, Client>();
             CreateMap<EnterpriseDTO, Enterprise>();
             CreateMap<PlanDTO, Plan>();
