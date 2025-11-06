@@ -8,7 +8,7 @@ namespace Domain.ValueObjects
 {
     public enum Status
     {
-        InProgress = 1,
+        InProgress = 0,
         Finished = 2,
         Canceled = 3
     }
