@@ -11,6 +11,7 @@ namespace Domain.Entities
         public string Function { get; set; }
         public string? About { get; set; }
         public string ActuationTime { get; set; } 
+        public string CRO { get; set; }
 
         public Professional() { }
     }

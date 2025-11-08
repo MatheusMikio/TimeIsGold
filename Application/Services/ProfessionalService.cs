@@ -100,6 +100,7 @@ namespace Application.Services
             if (!ValidateFunction(professional.Function, messages)) validation = false;
             if (!ValidateAbout(professional.About, messages)) validation = false;
             if (!ValidateActuationTime(professional.ActuationTime, messages)) validation = false;
+            if (!ValidateCRO(professional.CRO, messages)) validation = false;
 
             //cpf duplicado
             if (repository.CpfExists(professional.Cpf))
@@ -275,6 +276,21 @@ namespace Application.Services
             if (actuationTime.Length > 50)
             {
                 messages.Add(new ErrorMessage("ActuationTime", "O tempo de atuação deve ter no máximo 50 caracteres."));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool ValidateCRO(string cro, List<ErrorMessage> messages)
+        {
+            if (string.IsNullOrWhiteSpace(cro))
+            {
+                messages.Add(new ErrorMessage("CRO", "O CRO é obrigatório."));
+                return false;
+            }
+            if (!Regex.IsMatch(cro, @"^CRO[-\s]?[A-Z]{2}\s?\d{1,6}$"))
+            {
+                messages.Add(new ErrorMessage("CRO", "Formato de CRO inválido. Ex: CRO-SP 12345."));
                 return false;
             }
             return true;

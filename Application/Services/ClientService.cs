@@ -74,6 +74,8 @@ namespace Application.Services
 
             messages = results.Select(e => new ErrorMessage(e.MemberNames.FirstOrDefault(), e.ErrorMessage)).ToList();
 
+            if (!ValidatePhone(client.Phone, messages)) validation = false;
+
             if (repository.EmailExists(client.Email))
             {
                 messages.Add(new ErrorMessage("Email", "Email já cadastrado"));
@@ -89,11 +91,6 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("CPF", "CPF inválido."));
                 validation = false;
             }
-            //if (!ValidatePhone(client.Phone))
-            //{
-            //    messages.Add(new ErrorMessage("Ta errado sapoha"));
-            //    validation = false;
-            //}
 
             return validation;
         }
@@ -290,11 +287,11 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Password", "A senha deve ter pelo menos 8 caracteres."));
                 return false;
             }
-            //if (!Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)$"))
-            //{
-            //    messages.Add(new ErrorMessage("Password", "A senha deve conter pelo menos uma letra maiúscula, minúscula e número."));
-            //    return false;
-            //}
+            if (!Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$"))
+            {
+                messages.Add(new ErrorMessage("Password", "A senha deve conter pelo menos uma letra maiúscula, minúscula e número."));
+                return false;
+            }
             return true;
         }
     }
