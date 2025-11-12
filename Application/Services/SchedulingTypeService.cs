@@ -78,8 +78,6 @@ namespace Application.Services
                 }
             }
         }
-
-
         public static bool Validate(
             SchedulingTypeDTO scheduling,
             out List<ErrorMessage> messages,
@@ -157,7 +155,6 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Tipo de Agendamento", "Já existe um tipo de agendamento com esse nome"));
                 return false;
             }
-
 
             if (string.IsNullOrEmpty(schedulingType.Name))
             {

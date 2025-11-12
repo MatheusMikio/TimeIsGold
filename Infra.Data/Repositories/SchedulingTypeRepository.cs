@@ -16,7 +16,7 @@ namespace Infra.Data.Repositories
         public SchedulingTypeRepository(TimeIsGoldDbContext context) : base(context)
         {
         }
-
+            
         public bool GetByName(string schedulingTypeName, long enterpriseId) => _context.
             SchedulingTypes.Any(s => s.Name == schedulingTypeName &&
             s.EnterpriseId == enterpriseId);

@@ -21,11 +21,12 @@ namespace TimeIsGold
             builder.Services.AddDbContext<TimeIsGoldDbContext>(options =>
                 options.UseNpgsql(connection));
 
-            // Configuração manual do AutoMapper
+            // Configuração do AutoMapper
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new EntityToDTOMapping());
             });
+
             IMapper mapper = mapperConfig.CreateMapper();
             builder.Services.AddSingleton(mapper);
 

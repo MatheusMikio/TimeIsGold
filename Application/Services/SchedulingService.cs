@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
 using Domain.Ports.Scheduling;
+using Domain.Ports.SchedulingType;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -14,25 +15,31 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    //private readonly IClientRepository _clientRepository;
-    //private readonly IProfessionalRepository _professionalRepository;
-    //private readonly IEnterpriseRepository _enterpriseRepository;
     public class SchedulingService : BaseService<SchedulingDTO, Scheduling, ISchedulingRepository>, ISchedulingService
     {
+        //private readonly IClientRepository _clientRepository;
+        //private readonly IProfessionalRepository _professionalRepository;
+        //private readonly IEnterpriseRepository _enterpriseRepository;
+        private ISchedulingTypeRepository _schedulingTypeRepository;
+
         public SchedulingService(
             ISchedulingRepository repository,
+            ISchedulingTypeRepository schedulingTypeRepository,
             IMapper mapper/*,
             IClientRepository clientRepository,
             IProfessionalRepository professionalRepository
             IEnterpriseRepository enterpriseRepository*/
+            
         ) : base(
             repository,
             mapper
             )
         {
+
             /*_clientRepository = clientRepository
              _professionalRepository = professionalRepository
             _enterpriseRepository = enterpriseRepository;*/
+            _schedulingTypeRepository = schedulingTypeRepository;
         }
 
         public int GetTodaySchedulings(long id, out List<ErrorMessage> messages)
@@ -86,7 +93,7 @@ namespace Application.Services
         {
             bool valid = Validate(schedulingDTO,
                 out messages, 
-                _repository/*,
+                _repository, _schedulingTypeRepository/*,
                 *IClientRepository clientRepository,
              *  IProfessionalRepository professionalRepository,
              *  IEnterpriseRepository enterpriseRepository*/
@@ -113,7 +120,8 @@ namespace Application.Services
         {
             bool valid = ValidateUpdate(schedulingDTO,
                 out messages,
-                _repository/*,
+                _repository,
+                _schedulingTypeRepository/*,
                 *IClientRepository clientRepository,
                 *IProfessionalRepository professionalRepository,
                 *IEnterpriseRepository enterpriseRepository*/);
@@ -142,7 +150,8 @@ namespace Application.Services
         public static bool Validate(
             SchedulingDTO scheduling,
             out List<ErrorMessage> messages,
-            ISchedulingRepository repository/*,
+            ISchedulingRepository repository,
+            ISchedulingTypeRepository schedulingTypeRepository/*,
             *IClientRepository clientRepository,
             *IProfessionalRepository professionalRepository,
             *IEnterpriseRepository enterpriseRepository*/
@@ -175,6 +184,19 @@ namespace Application.Services
             //    return false;
             //}
 
+            SchedulingType ? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
+            if (schedulingTypeDb == null)
+            {
+                messages.Add(new ErrorMessage("Tipo de Agendamento", "Tipo de agendamento não encontrado"));
+                return false;
+            }
+
+            if (schedulingTypeDb.EnterpriseId != scheduling.EnterpriseId)
+            {
+                messages.Add(new ErrorMessage("Tipo de Agendamento", "Tipo de agendamento não pertence à empresa especificada"));
+                return false;
+            }
+
             if (scheduling.ScheduledDate < DateTime.UtcNow)
             {
                 messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
@@ -194,7 +216,8 @@ namespace Application.Services
         public static bool ValidateUpdate(
             SchedulingDTOUpdate scheduling,
             out List<ErrorMessage> messages,
-            ISchedulingRepository repository/*,
+            ISchedulingRepository repository,
+            ISchedulingTypeRepository schedulingTypeRepository/*,
             *IClientRepository clientRepository,
             *IProfessionalRepository professionalRepository,
             *IEnterpriseRepository enterpriseRepository*/
@@ -240,13 +263,26 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
                 return false;
             }
-
-            if (!repository.IsUnique(scheduling))
+            SchedulingType? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
+            if (schedulingTypeDb == null)
             {
-                messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
+                messages.Add(new ErrorMessage("Tipo de Agendamento", "Tipo de agendamento não encontrado"));
                 return false;
             }
 
+            if (schedulingTypeDb.EnterpriseId != scheduling.EnterpriseId)
+            {
+                messages.Add(new ErrorMessage("Tipo de Agendamento", "Tipo de agendamento não pertence à empresa especificada"));
+                return false;
+            }
+
+            if (!repository.IsUnique(scheduling))
+            {
+                messages.Add(
+                    new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora")
+                );
+                return false;
+            }
             return validation;
         }
     }

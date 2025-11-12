@@ -20,6 +20,5 @@ namespace Application.DTOs.Enterprise
         public PlanDTOOutput Plan { get; set; }
         public IList<SchedulingTypeDTOOutput> ? SchedulingType { get; set; }
         public IList<ProfessionalDTOOutput> ? Professionals { get; set; }
-        public IList<ClientDTOOutput> ? Clients { get; set; }
     }
 }
