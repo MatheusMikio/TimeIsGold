@@ -12,7 +12,6 @@ namespace Domain.Entities
         public Address Address { get; set; }
         public IList<SchedulingType> ? SchedulingType { get; set; }
         public IList<Professional> ? Professionals { get; set; }
-        public IList<Client> ? Clients { get; set; }
     }
 }
 

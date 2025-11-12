@@ -19,8 +19,6 @@ namespace Infra.Data.Repositories
             p => p.Id != plan.Id && 
             (
                 (int)p.Level == plan.Level
-                || p.Value == plan.Value
-                || p.ScheduleTypeLimit == plan.ScheduleTypeLimit
             )
         );
 

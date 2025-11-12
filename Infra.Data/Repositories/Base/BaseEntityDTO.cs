@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTOs.Plan
+namespace Domain.DTOs.Base
 {
-    public class PlanDTOUpdate
+    public abstract class BaseEntityDTO
     {
         public long Id { get; set; }
-        public int Level { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime ? ChangedAt { get; set; }
     }
 }

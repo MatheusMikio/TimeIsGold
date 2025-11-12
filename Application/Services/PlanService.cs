@@ -56,10 +56,8 @@ namespace Application.Services
 
                 try
                 {
-                    planEntity.Value = entity.Value;
                     planEntity.Level = (PlanLevel)entity.Level;
                     planEntity.ChangedAt = DateTime.UtcNow;
-                    planEntity.ScheduleTypeLimit = entity.ScheduleTypeLimit;
                     _repository.Update(planEntity);
                 }
                 catch (Exception ex)
@@ -87,18 +85,6 @@ namespace Application.Services
             {
                 messages.Add(new ErrorMessage("Plano", "Já existe um plano com esse nível"));
                 return false;
-            }
-
-            if (plan.Value < 100)
-            {
-                messages.Add(new ErrorMessage("Plano", "O valor do plano não pode ser menor que R$100,00"));
-                validation = false;
-            }
-
-            if (plan.ScheduleTypeLimit < 5)
-            {
-                messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
-                validation = false;
             }
 
             return validation;
@@ -129,18 +115,6 @@ namespace Application.Services
             if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
-                validation = false;
-            }
-
-            if (plan.Value < 100)
-            {
-                messages.Add(new ErrorMessage("Plano", "O valor do plano não pode ser menor que R$100,00"));
-                validation = false;
-            }
-
-            if (plan.ScheduleTypeLimit < 5)
-            {
-                messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
                 validation = false;
             }
 

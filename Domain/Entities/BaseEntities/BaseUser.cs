@@ -1,4 +1,11 @@
-﻿namespace Domain.Entities.BaseEntities
+using Domain.ValueObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities.BaseEntities
 {
     public abstract class BaseUser : BaseEntity
     {
@@ -8,8 +15,8 @@
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string Phone { get; set; }
+        public bool Status { get; set; }
         public IList<Scheduling> ? Schedulings { get; set; }
-
         protected BaseUser(){ }
     }
 }

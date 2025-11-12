@@ -53,6 +53,12 @@ namespace Application.Mapping
 
             //CreateMap<Professional, ProfessionalDTOOutput>()
             //    .ForMember(dest => dest.Enterprise, opt => opt.Ignore()); 
+            
+            //CreateMap<Professional, ProfessionalDTOOutput>()
+            //    .ForMember(dest => dest.Schedulings, opt => opt.Ignore());   
+
+            //CreateMap<Client, ClientDTOOutput>()
+            //    .ForMember(dest => dest.Schedulings, opt => opt.Ignore());
 
             //CreateMap<SchedulingType, SchedulingTypeDTOOutput>()
             //    .ForMember(dest => dest.Enterprise, opt => opt.Ignore());

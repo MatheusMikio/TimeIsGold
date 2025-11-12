@@ -17,8 +17,9 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool GetByName(string schedulingTypeName, long enterpriseId) => _context.SchedulingTypes.Any(s => s.Name == schedulingTypeName &&
-        s.EnterpriseId == enterpriseId);
+        public bool GetByName(string schedulingTypeName, long enterpriseId) => _context.
+            SchedulingTypes.Any(s => s.Name == schedulingTypeName &&
+            s.EnterpriseId == enterpriseId);
 
         public bool IsUnique(SchedulingTypeDTOUpdate schedulingType)
         {

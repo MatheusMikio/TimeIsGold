@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Plan
+namespace Domain.ValueObjects
 {
-    public class PlanDTO
+    public enum PeriodType
     {
-        public int Level { get; set; }
-
+        Week,
+        Month
     }
 }
