@@ -152,12 +152,6 @@ namespace Application.Services
                 isValid = false;
             }
 
-            //if (string.IsNullOrWhiteSpace(enterprise.Address) || enterprise.Address.Length < 5)
-            //{
-            //    messages.Add(new ErrorMessage("Address", "O endereço é obrigatório e deve ter pelo menos 5 caracteres."));
-            //    isValid = false;
-            //}
-
             return isValid;
         }
 
