@@ -5,8 +5,8 @@ namespace Domain.Ports.Client
 {
     public interface IClientRepository : IBaseRepository
     {
-        bool EmailExists(string email, long? ignoreId = null);
-        bool CpfExists(string cpf, long? ignoreId = null);
+        bool EmailExists(string email);
+        bool CpfExists(string cpf);
         Entities.Client? GetByEmail(string email);
     }
 }

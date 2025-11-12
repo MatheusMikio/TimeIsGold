@@ -10,18 +10,14 @@ namespace Infra.Data.Repositories
         public ClientRepository(TimeIsGoldDbContext context) : base(context)
         {
         }
-        public bool EmailExists(string email, long? ignoreId = null)
+        public bool EmailExists(string email)
         {
-            return ignoreId.HasValue
-                ? _context.Clients.Any(client => client.Email == email && client.Id != ignoreId.Value)
-                : _context.Clients.Any(client => client.Email == email);
+            return _context.Clients.Any(c => c.Email == email);
         }
 
-        public bool CpfExists(string cpf, long? ignoreId = null)
+        public bool CpfExists(string cpf)
         {
-            return ignoreId.HasValue
-                ? _context.Clients.Any(client => client.Cpf == cpf && client.Id != ignoreId.Value)
-                : _context.Clients.Any(client => client.Cpf == cpf);
+            return _context.Clients.Any(c => c.Cpf == cpf);
         }
 
         public Client? GetByEmail(string email)

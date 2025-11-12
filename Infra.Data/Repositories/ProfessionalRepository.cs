@@ -12,23 +12,21 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool CpfExists(string cpf, long? ignoreId = null)
+        public bool CpfExists(string cpf)
         {
-            return ignoreId.HasValue
-                ? _context.Professionals.Any(p => p.Cpf == cpf && p.Id != ignoreId.Value)
-                : _context.Professionals.Any(p => p.Cpf == cpf);
+            return _context.Professionals.Any(p => p.Cpf == cpf);
         }
 
-        public bool EmailExists(string email, long? ignoreId = null)
+        public bool EmailExists(string email)
         {
-            return ignoreId.HasValue
-                ? _context.Professionals.Any(p => p.Email == email && p.Id != ignoreId.Value)
-                : _context.Professionals.Any(p => p.Email == email);
+            return _context.Professionals.Any(p => p.Email == email);
         }
 
         public bool IsUnique(ProfessionalDTOUpdate professional)
         {
-            throw new NotImplementedException();
+            return !_context.Professionals.Any(p =>
+                (p.Email == professional.Email || p.Cpf == professional.Cpf)
+                && p.Id != professional.Id);
         }
 
         public Professional? GetByEmail(string email)

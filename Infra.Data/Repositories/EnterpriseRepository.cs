@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs.Enterprise;
+using Domain.Entities;
 using Domain.Ports.Enterprise;
 using Infrastructure.Data;
 
@@ -17,11 +18,14 @@ namespace Infra.Data.Repositories
                 ent.Id != enterprise.Id);
         }
 
-        public bool CnpjExists(string cnpj, long? ignoreId = null)
+        public bool CnpjExists(string cnpj)
         {
-            return ignoreId.HasValue
-                ? _context.Enterprises.Any(enterprise => enterprise.Cnpj == cnpj && enterprise.Id != ignoreId.Value)
-                : _context.Enterprises.Any(enterprise => enterprise.Cnpj == cnpj);
+            return _context.Enterprises.Any(enterprise => enterprise.Cnpj == cnpj);
+        }
+
+        public Enterprise? GetByCnpj(string cnpj)
+        {
+            return _context.Enterprises.FirstOrDefault(e => e.Cnpj == cnpj);
         }
     }
 }

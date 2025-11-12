@@ -82,20 +82,17 @@ namespace Application.Services
                 isValid = false;
             }
 
-            else if (!ValidateCnpj(enterprise.Cnpj))
+            if (!ValidateCnpj(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
                 isValid = false;
             }
 
-            else
+            var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
+            if (existing != null)
             {
-                var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
-                if (existing != null)
-                {
-                    messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
-                    isValid = false;
-                }
+                messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
+                isValid = false;
             }
 
             if (enterprise.PlanId <= 0)
@@ -103,6 +100,7 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
                 isValid = false;
             }
+
             return isValid;
         }
 
@@ -129,21 +127,17 @@ namespace Application.Services
                 isValid = false;
             }
 
-            else if (!ValidateCnpj(enterprise.Cnpj))
+            if (!ValidateCnpj(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
                 isValid = false;
             }
 
-            else
+            var existing = ((IEnterpriseRepository)repository).GetByCnpj(enterprise.Cnpj);
+            if (existing != null && existing.Id != enterprise.Id)
             {
-                var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault(e => e.Id != enterprise.Id);
-
-                if (existing != null)
-                {
-                    messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
-                    isValid = false;
-                }
+                messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
+                isValid = false;
             }
 
             if (enterprise.PlanId <= 0)

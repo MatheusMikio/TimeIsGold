@@ -35,42 +35,29 @@ namespace Application.Services
 
             var admin = _professionalRepository.GetByEmailAndType(loginDto.Email, ProfessionalType.Admin);
             if (admin != null && BCrypt.Net.BCrypt.Verify(loginDto.Password, admin.PasswordHash))
-            {
-                return new LoggedDTO
-                {
-                    Id = admin.Id,
-                    Name = admin.Name,
-                    Email = admin.Email,
-                    Role = "Admin"
-                };
-            }
+                return CreateLoggedDTO(admin, "Admin");
 
             var professional = _professionalRepository.GetByEmail(loginDto.Email);
             if (professional != null && BCrypt.Net.BCrypt.Verify(loginDto.Password, professional.PasswordHash))
-            {
-                return new LoggedDTO()
-                {
-                    Id = professional.Id,
-                    Name = professional.Name,
-                    Email = professional.Email,
-                    Role = "Professional"
-                };
-            }
+                return CreateLoggedDTO(professional, "Professional");
 
             var client = _clientRepository.GetByEmail(loginDto.Email);
             if (client != null && BCrypt.Net.BCrypt.Verify(loginDto.Password, client.PasswordHash))
-            {
-                return new LoggedDTO
-                {
-                    Id = client.Id,
-                    Name = client.Name,
-                    Email = client.Email,
-                    Role = "Client"
-                };
-            }
+                return CreateLoggedDTO(client, "Client");
 
             messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
             return null;
+        }
+
+        private static LoggedDTO CreateLoggedDTO(dynamic user, string role)
+        {
+            return new LoggedDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = role
+            };
         }
     }
 }

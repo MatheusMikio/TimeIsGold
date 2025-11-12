@@ -158,15 +158,9 @@ namespace Application.Services
             if (!ValidatePhone(professional.Phone, messages)) validation = false;
 
             // Checa duplicidade ignorando o próprio Id
-            if (repository.CpfExists(professional.Cpf, professional.Id))
+            if (!repository.IsUnique(professional))
             {
-                messages.Add(new ErrorMessage("Cpf", "Já existe outro profissional com este CPF"));
-                validation = false;
-            }
-
-            if (repository.EmailExists(professional.Email, professional.Id))
-            {
-                messages.Add(new ErrorMessage("Email", "Já existe outro profissional com este email"));
+                messages.Add(new ErrorMessage("Professional", "Já existe outro profissional com este e-mail ou CPF."));
                 validation = false;
             }
 

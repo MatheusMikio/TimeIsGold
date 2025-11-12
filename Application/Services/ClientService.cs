@@ -74,6 +74,7 @@ namespace Application.Services
 
             messages = results.Select(e => new ErrorMessage(e.MemberNames.FirstOrDefault(), e.ErrorMessage)).ToList();
 
+            if (!ValidateName(client.Name, messages)) validation = false;
             if (!ValidatePhone(client.Phone, messages)) validation = false;
 
             if (repository.EmailExists(client.Email))
@@ -135,18 +136,23 @@ namespace Application.Services
             return validation;
         }
 
-        public bool VerifyPassword(Client clientEntity, string plainPassword)
+        public bool ChangePassword(out List<ErrorMessage> messages, long clientId, string newPassword)
         {
-            return BCrypt.Net.BCrypt.Verify(plainPassword, clientEntity.PasswordHash);
-        }
+            messages = new List<ErrorMessage>();
 
-        public void ChangePassword(long clientId, string newPassword)
-        {
             var client = _repository.GetById<Client>(clientId);
-            if (client == null) throw new Exception("Cliente não encontrado");
+            if (client == null)
+            {
+                messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado."));
+                return false;
+            }
+
+            if (!ValidatePassword(newPassword, messages))
+                return false;
 
             client.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             _repository.Update(client);
+            return true;
         }
 
         public static bool ValidateCpf(string cpf)
