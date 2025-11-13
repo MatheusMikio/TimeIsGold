@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Client;
 using Domain.DTOs.Client;
+using Domain.DTOs.Login;
 using Domain.Entities;
 using Domain.Ports.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,18 @@ namespace TimeIsGold.Controllers
             if (errors.Count == 0) return NoContent();
 
             return BadRequest(errors);
+        }
+
+        [HttpGet("login")]
+        public IActionResult Login([FromBody] LoginDTO loginDto)
+        {
+            if (loginDto == null) return BadRequest("Dados de login são obrigatórios.");
+            
+            ClientDTOOutput logged = _service.Login(loginDto.Email, loginDto.Password, out List<ErrorMessage> messages);
+
+            if (logged == null) return Unauthorized(messages);
+
+            return Ok(logged);
         }
     }
 }

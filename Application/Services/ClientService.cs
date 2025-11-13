@@ -5,6 +5,8 @@ using Domain.DTOs.Client;
 using Domain.Entities;
 using Domain.Ports.Client;
 using System.Text.RegularExpressions;
+using Domain.DTOs.Login;
+using Domain.ValueObjects;
 
 namespace Application.Services
 {
@@ -299,6 +301,33 @@ namespace Application.Services
                 return false;
             }
             return true;
+        }
+
+        public ClientDTOOutput Login(string email, string password, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                messages.Add(new ErrorMessage("Login", "E-mail e senha são obrigatórios."));
+                return null;
+            }
+
+            var client = _repository.GetByEmail(email);
+
+            if (client == null)
+            {
+                messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
+                return null;
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, client.PasswordHash))
+            {
+                messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
+                return null;
+            }
+
+            return _mapper.Map<ClientDTOOutput>(client);
         }
     }
 }

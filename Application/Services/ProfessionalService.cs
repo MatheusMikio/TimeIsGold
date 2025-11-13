@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Application.DTOs.Client;
 using Application.DTOs.Professional;
 using AutoMapper;
+using Domain.DTOs.Login;
 using Domain.DTOs.Professional;
 using Domain.Entities;
 using Domain.Ports.Professional;
@@ -288,6 +290,32 @@ namespace Application.Services
                 return false;
             }
             return true;
+        }
+
+        public ProfessionalDTOOutput Login(string email, string password, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                messages.Add(new ErrorMessage("Login", "E-mail e senha são obrigatórios."));
+                return null;
+            }
+
+            var profesional = _repository.GetByEmail(email);
+
+            if (profesional != null){
+                messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
+                return null;
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, profesional.PasswordHash))
+            {
+                messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
+                return null;
+            }
+
+            return _mapper.Map<ProfessionalDTOOutput>(profesional);
         }
     }
 }
