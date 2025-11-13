@@ -31,6 +31,12 @@ namespace Infra.Data.Repositories.Base
                     .Include("Professionals");
             }
 
+            if (typeof(Thing) == typeof(Client))
+            {
+                query = query
+                    .Include("Schedulings");
+            }
+
             if (typeof(Thing) == typeof(Scheduling))
             {
                 query = query
@@ -62,7 +68,9 @@ namespace Infra.Data.Repositories.Base
                         ),
 
                     nameof(
-                        Client) => query.Where(c => EF.Property<string>(c, "Name")
+                        Client) => query
+                        .Include("Schedulings")
+                        .Where(c => EF.Property<string>(c, "Name")
                         .Contains(searchText) ||
                         EF.Property<string>(c, "Cpf").Contains(searchText) ||
                         EF.Property<string>(c, "Email").Contains(searchText)
@@ -107,6 +115,13 @@ namespace Infra.Data.Repositories.Base
                     .Include("SchedulingType")
                     .Include("Professionals")
                     .FirstOrDefault(e => EF.Property<long>(e, "Id") == id);
+            }
+
+            if (typeof(Thing) == typeof(Client))
+            {
+                return _context.Set<Thing>()
+                    .Include("Schedulings")
+                    .FirstOrDefault(c => EF.Property<long>(c, "Id") == id);
             }
 
             if (typeof(Thing) == typeof(Scheduling))
