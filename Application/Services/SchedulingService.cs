@@ -2,6 +2,9 @@
 using AutoMapper;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
+using Domain.Ports.Client;
+using Domain.Ports.Enterprise;
+using Domain.Ports.Professional;
 using Domain.Ports.Scheduling;
 using Domain.Ports.SchedulingType;
 using Domain.ValueObjects;
@@ -17,28 +20,28 @@ namespace Application.Services
 {
     public class SchedulingService : BaseService<SchedulingDTO, Scheduling, ISchedulingRepository>, ISchedulingService
     {
-        //private readonly IClientRepository _clientRepository;
-        //private readonly IProfessionalRepository _professionalRepository;
-        //private readonly IEnterpriseRepository _enterpriseRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IProfessionalRepository _professionalRepository;
+        private readonly IEnterpriseRepository _enterpriseRepository;
         private ISchedulingTypeRepository _schedulingTypeRepository;
 
         public SchedulingService(
             ISchedulingRepository repository,
             ISchedulingTypeRepository schedulingTypeRepository,
-            IMapper mapper/*,
+            IMapper mapper,
             IClientRepository clientRepository,
-            IProfessionalRepository professionalRepository
-            IEnterpriseRepository enterpriseRepository*/
-            
+            IProfessionalRepository professionalRepository,
+            IEnterpriseRepository enterpriseRepository
+
         ) : base(
             repository,
             mapper
             )
         {
 
-            /*_clientRepository = clientRepository
-             _professionalRepository = professionalRepository
-            _enterpriseRepository = enterpriseRepository;*/
+            _clientRepository = clientRepository;
+            _professionalRepository = professionalRepository;
+            _enterpriseRepository = enterpriseRepository;
             _schedulingTypeRepository = schedulingTypeRepository;
         }
 
@@ -93,10 +96,10 @@ namespace Application.Services
         {
             bool valid = Validate(schedulingDTO,
                 out messages, 
-                _repository, _schedulingTypeRepository/*,
-                *IClientRepository clientRepository,
-             *  IProfessionalRepository professionalRepository,
-             *  IEnterpriseRepository enterpriseRepository*/
+                _repository, _schedulingTypeRepository,
+                _clientRepository,
+                _professionalRepository,
+                _enterpriseRepository
             );
 
             if (valid)
@@ -104,6 +107,7 @@ namespace Application.Services
                 try
                 {
                     Scheduling scheduling = _mapper.Map<Scheduling>(schedulingDTO);
+                    scheduling.Status = Status.Pendent;
                     _repository.Create(scheduling);
                     return true;
                 }
@@ -121,10 +125,10 @@ namespace Application.Services
             bool valid = ValidateUpdate(schedulingDTO,
                 out messages,
                 _repository,
-                _schedulingTypeRepository/*,
-                *IClientRepository clientRepository,
-                *IProfessionalRepository professionalRepository,
-                *IEnterpriseRepository enterpriseRepository*/);
+                _schedulingTypeRepository,
+                _clientRepository,
+                _professionalRepository,
+                _enterpriseRepository);
 
             if (valid)
             {
@@ -151,10 +155,10 @@ namespace Application.Services
             SchedulingDTO scheduling,
             out List<ErrorMessage> messages,
             ISchedulingRepository repository,
-            ISchedulingTypeRepository schedulingTypeRepository/*,
-            *IClientRepository clientRepository,
-            *IProfessionalRepository professionalRepository,
-            *IEnterpriseRepository enterpriseRepository*/
+            ISchedulingTypeRepository schedulingTypeRepository,
+            IClientRepository clientRepository,
+            IProfessionalRepository professionalRepository,
+            IEnterpriseRepository enterpriseRepository
         )
         {
             ValidationContext validationContext = new(scheduling);
@@ -163,26 +167,26 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
-            //if (professionalDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
-            //    return false;
-            //}
+            Professional ? professionalDb = professionalRepository.GetById<Professional>(scheduling.ProfessionalId);
+            if (professionalDb == null)
+            {
+                messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+                return false;
+            }
 
-            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
-            //if (clientDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-            //    return false;
-            //}
+            Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            if (clientDb == null)
+            {
+                messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+                return false;
+            }
 
-            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
-            //if (enterpriseDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-            //    return false;
-            //}
+            Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            if (enterpriseDb == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return false;
+            }
 
             SchedulingType ? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
             if (schedulingTypeDb == null)
@@ -217,10 +221,10 @@ namespace Application.Services
             SchedulingDTOUpdate scheduling,
             out List<ErrorMessage> messages,
             ISchedulingRepository repository,
-            ISchedulingTypeRepository schedulingTypeRepository/*,
-            *IClientRepository clientRepository,
-            *IProfessionalRepository professionalRepository,
-            *IEnterpriseRepository enterpriseRepository*/
+            ISchedulingTypeRepository schedulingTypeRepository,
+            IClientRepository clientRepository,
+            IProfessionalRepository professionalRepository,
+            IEnterpriseRepository enterpriseRepository
 
         )
         {
@@ -237,26 +241,26 @@ namespace Application.Services
                 return false;
             }
 
-            //Professional ? professionalDb = clientRepository.GetById<Professional>(scheduling.ProfessionalId);
-            //if (professionalDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
-            //    return false;
-            //}
+            Professional? professionalDb = professionalRepository.GetById<Professional>(scheduling.ProfessionalId);
+            if (professionalDb == null)
+            {
+                messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+                return false;
+            }
 
-            //Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
-            //if (clientDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-            //    return false;
-            //}
+            Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            if (clientDb == null)
+            {
+                messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
+                return false;
+            }
 
-            //Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
-            //if (enterpriseDb == null)
-            //{
-            //    messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-            //    return false;
-            //}
+            Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            if (enterpriseDb == null)
+            {
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                return false;
+            }
 
             if (scheduling.ScheduledDate < DateTime.UtcNow)
             {

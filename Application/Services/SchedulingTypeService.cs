@@ -3,6 +3,7 @@ using Application.DTOs.SchedulingType;
 using AutoMapper;
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
+using Domain.Ports.Enterprise;
 using Domain.Ports.SchedulingType;
 using System;
 using System.Collections.Generic;
@@ -14,24 +15,24 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class SchedulingTypeService : BaseService<SchedulingDTO, Scheduling, ISchedulingTypeRepository>, ISchedulingTypeService
+    public class SchedulingTypeService : BaseService<SchedulingTypeDTO, SchedulingType, ISchedulingTypeRepository>, ISchedulingTypeService
     {
-        //private readonly IEnterpriseRepository _enterpriseRepository;
+        private readonly IEnterpriseRepository _enterpriseRepository;
         public SchedulingTypeService(
             ISchedulingTypeRepository SchedulingTyperepository,
-            IMapper mapper/*,
-            IEnterpriseRepository entepriseRepository*/
+            IMapper mapper,
+            IEnterpriseRepository entepriseRepository
         ) : base(
             SchedulingTyperepository,
             mapper
             )
         {
-            //_entepriseRepository = entepriseRepository; 
+            _enterpriseRepository = entepriseRepository;
         }
 
         public bool Create(SchedulingTypeDTO schedulingType, out List<ErrorMessage> messages)
         {
-            bool valid = Validate(schedulingType, out messages, _repository);
+            bool valid = Validate(schedulingType, out messages, _repository, _enterpriseRepository);
             
             if (valid)
             {
@@ -52,7 +53,7 @@ namespace Application.Services
 
         public void Update(SchedulingTypeDTOUpdate entity, out List<ErrorMessage> messages)
         {
-            bool valid = ValidateUpdate(entity, out messages, _repository/*, _enterpriseRepository*/);
+            bool valid = ValidateUpdate(entity, out messages, _repository, _enterpriseRepository);
 
             if (valid)
             {
@@ -81,8 +82,8 @@ namespace Application.Services
         public static bool Validate(
             SchedulingTypeDTO scheduling,
             out List<ErrorMessage> messages,
-            ISchedulingTypeRepository SchedulingTyperepository/*,
-            *IEnterpiseRepository enterpriseRepository*/
+            ISchedulingTypeRepository SchedulingTyperepository,
+            IEnterpriseRepository enterpriseRepository
         )
         {
             ValidationContext validationContext = new(scheduling);
@@ -109,12 +110,12 @@ namespace Application.Services
                 return false;
             }
 
-            /*Enterprise ? entepriseDb = entepriseRepository.GetById(scheduling.EnterpriseId)
-             if (enterpriseDb == null)
+            Enterprise ? entepriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+             if (entepriseDb == null)
             {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada.")
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada."));
                 return false;
-            }*/
+            }
 
             if (scheduling.Name.Length < 3)
             {
@@ -140,8 +141,8 @@ namespace Application.Services
         public static bool ValidateUpdate(
             SchedulingTypeDTOUpdate schedulingType,
             out List<ErrorMessage> messages,
-            ISchedulingTypeRepository schedulingTypeRepository/*,
-            *IEnterpiseRepository enterpriseRepository*/
+            ISchedulingTypeRepository schedulingTypeRepository,
+            IEnterpriseRepository enterpriseRepository
         )
         {
             ValidationContext validationContext = new(schedulingType);
@@ -174,12 +175,12 @@ namespace Application.Services
                 return false;
             }
 
-            /*Enterprise ? entepriseDb = entepriseRepository.GetById(scheduling.EnterpriseId)
-             if (enterpriseDb == null)
+            Enterprise ? entepriseDb = enterpriseRepository.GetById<Enterprise>(schedulingType.EnterpriseId);
+             if (entepriseDb == null)
             {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada.")
+                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada."));
                 return false;
-            }*/
+            }
 
             if (schedulingType.Name.Length < 3)
             {

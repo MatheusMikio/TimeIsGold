@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs.Plan;
 using Domain.Ports.Plan;
+using Infra.Data.Repositories.Base;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;

@@ -2,6 +2,7 @@
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
 using Domain.Ports.SchedulingType;
+using Infra.Data.Repositories.Base;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;

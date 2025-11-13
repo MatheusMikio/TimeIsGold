@@ -2,7 +2,6 @@
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;
 using Domain.Ports.SchedulingType;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TimeIsGold.Controllers

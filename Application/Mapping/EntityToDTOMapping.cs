@@ -25,11 +25,12 @@ namespace Application.Mapping
             CreateMap<Client, ClientDTOOutput>();
             CreateMap<Enterprise, EnterpriseDTOOutput>();
             CreateMap<Plan, PlanDTOOutput>();
-            CreateMap<Professional, ProfessionalDTOOutput>();
+            CreateMap<Professional, ProfessionalDTOOutput>()
+                .ForMember(dest => dest.EnterpriseId, opt => opt.MapFrom(src => src.EnterpriseId));
             CreateMap<Scheduling, SchedulingDTOOutput>();
             CreateMap<SchedulingType, SchedulingTypeDTOOutput>();
 
-            //Mapeamento de DTO para entidade Input
+            //Mapeamento de DTO para entidade
             CreateMap<ClientDTO, Client>();
             CreateMap<EnterpriseDTO, Enterprise>();
             CreateMap<PlanDTO, Plan>();
@@ -44,27 +45,21 @@ namespace Application.Mapping
             CreateMap<int, ProfessionalType>().ConvertUsing(src => (ProfessionalType)src);
             CreateMap<ProfessionalType, int>().ConvertUsing(src => (int)src);
 
-            ////Evitar ciclos de referência
-            //CreateMap<Plan, PlanDTOOutput>()
-            //    .ForMember(dest => dest.Enterprises, opt => opt.Ignore()); 
+            //Evitar ciclos de referência
+            CreateMap<Plan, PlanDTOOutput>()
+               .ForMember(dest => dest.Enterprises, opt => opt.Ignore());
 
-            //CreateMap<Enterprise, EnterpriseDTOOutput>()
-            //    .ForMember(dest => dest.Plan, opt => opt.Ignore()); 
+            CreateMap<Client, ClientDTOOutput>()
+                .ForMember(dest => dest.Schedulings, opt => opt.Ignore())
+                .ForMember(dest => dest.Enterprises, opt => opt.Ignore());
 
-            //CreateMap<Professional, ProfessionalDTOOutput>()
-            //    .ForMember(dest => dest.Enterprise, opt => opt.Ignore()); 
-            
-            //CreateMap<Professional, ProfessionalDTOOutput>()
-            //    .ForMember(dest => dest.Schedulings, opt => opt.Ignore());   
+            CreateMap<Professional, ProfessionalDTOOutput>()
+                .ForMember(dest => dest.Schedulings, opt => opt.Ignore())
+                .ForMember(dest => dest.EnterpriseId, opt => opt.MapFrom(src => src.EnterpriseId));
 
-            //CreateMap<Client, ClientDTOOutput>()
-            //    .ForMember(dest => dest.Schedulings, opt => opt.Ignore());
-
-            //CreateMap<SchedulingType, SchedulingTypeDTOOutput>()
-            //    .ForMember(dest => dest.Enterprise, opt => opt.Ignore());
-
-            //CreateMap<Client, ClientDTOOutput>()
-            //    .ForMember(dest => dest.Enterprises, opt => opt.Ignore());
+            CreateMap<Enterprise, EnterpriseDTOOutput>()
+                .ForMember(dest => dest.SchedulingType, opt => opt.MapFrom(src => src.SchedulingType))
+                .ForMember(dest => dest.Professionals, opt => opt.MapFrom(src => src.Professionals));
         }
     }
 }

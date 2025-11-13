@@ -14,6 +14,5 @@ namespace Application.DTOs.Scheduling
         public DateTime ScheduledDate { get; set; }
         public long EnterpriseId { get; set; }
         public long SchedulingTypeId { get; set; }
-        public int Status { get; set; }
     }
 }

@@ -17,7 +17,6 @@ namespace Application.Services
         {
             if (!Validate(dto, out messages, _repository))
             {
-                Console.WriteLine("Falhou na validação: " + string.Join(", ", messages.Select(m => m.Message)));
                 return null;
             }
 
@@ -25,12 +24,10 @@ namespace Application.Services
             {
                 Enterprise entity = _mapper.Map<Enterprise>(dto);
                 _repository.Create(entity);
-                Console.WriteLine("Empresa criada com sucesso!");
                 return entity;
             }
             catch
             {
-                Console.WriteLine("Erro ao salvar no banco: ");
                 messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar a empresa"));
                 return null;
             }

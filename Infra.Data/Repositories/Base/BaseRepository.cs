@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infra.Data.Repositories
+namespace Infra.Data.Repositories.Base
 {
     public class BaseRepository : IBaseRepository
     {
@@ -20,13 +20,31 @@ namespace Infra.Data.Repositories
             _context = context;
         }
 
-        public List<Thing> GetAll<Thing>(int page, int size) where Thing : class 
-            => _context.Set<Thing>()
-            .Skip((page - 1) * size)
-            .Take(size)
-            .ToList();
-        
+        public List<Thing> GetAll<Thing>(int page, int size) where Thing : class
+        {
+            IQueryable<Thing> query = _context.Set<Thing>();
 
+            if (typeof(Thing) == typeof(Enterprise))
+            {
+                query = query
+                    .Include("SchedulingType")
+                    .Include("Professionals");
+            }
+
+            if (typeof(Thing) == typeof(Scheduling))
+            {
+                query = query
+                    .Include("Professional")
+                    .Include("Client")
+                    .Include("SchedulingType")
+                    .Include("Enterprise");
+            }
+
+            return query
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToList();
+        }
         public List<Thing> GetByTextFilter<Thing>(int page, int size, string searchText) where Thing : class
         {
             IQueryable<Thing> query = _context.Set<Thing>().AsQueryable();
@@ -36,13 +54,11 @@ namespace Infra.Data.Repositories
                 {
                     nameof(Enterprise) => query
                         .Include("Address")
+                        .Include("SchedulingType")
+                        .Include("Professionals")
                         .Where(e =>
                             (e as Enterprise).Name.Contains(searchText) ||
-                            (e as Enterprise).Cnpj.Contains(searchText) ||
-                            (e as Enterprise).Address.Street.Contains(searchText) ||
-                            (e as Enterprise).Address.City.Contains(searchText) ||
-                            (e as Enterprise).Address.State.Contains(searchText) ||
-                            (e as Enterprise).Address.Country.Contains(searchText)
+                            (e as Enterprise).Cnpj.Contains(searchText) 
                         ),
 
                     nameof(
@@ -64,6 +80,15 @@ namespace Infra.Data.Repositories
                         .Contains(searchText)
                     ),
 
+                    nameof(
+                        Scheduling) => query
+                        .Include("Professional")
+                        .Include("Client")
+                        .Include("SchedulingType")
+                        .Where(s => 
+                            EF.Property<string>(s, "Status").Contains(searchText)
+                        ),
+
                     _ => query
                 };
             }
@@ -74,7 +99,27 @@ namespace Infra.Data.Repositories
                 .ToList();
         }
 
-        public Thing ? GetById<Thing>(long id) where Thing : class => _context.Set<Thing>().Find(id);
+        public Thing ? GetById<Thing>(long id) where Thing : class
+        {
+            if (typeof(Thing) == typeof(Enterprise))
+            {
+                return _context.Set<Thing>()
+                    .Include("SchedulingType")
+                    .Include("Professionals")
+                    .FirstOrDefault(e => EF.Property<long>(e, "Id") == id);
+            }
+
+            if (typeof(Thing) == typeof(Scheduling))
+            {
+                return _context.Set<Thing>()
+                    .Include("Professional")
+                    .Include("Client")
+                    .Include("SchedulingType")
+                    .FirstOrDefault(s => EF.Property<long>(s, "Id") == id);
+            }
+
+            return _context.Set<Thing>().Find(id);
+        }
 
         public void Create<Thing>(Thing entity) where Thing : class
         {

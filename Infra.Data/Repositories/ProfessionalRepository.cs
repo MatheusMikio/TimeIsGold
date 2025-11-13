@@ -2,6 +2,7 @@
 using Domain.Entities;
 using Domain.Ports.Professional;
 using Domain.ValueObjects;
+using Infra.Data.Repositories.Base;
 using Infrastructure.Data;
 
 namespace Infra.Data.Repositories

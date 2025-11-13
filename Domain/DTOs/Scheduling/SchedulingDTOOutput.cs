@@ -16,7 +16,7 @@ namespace Application.DTOs.Scheduling
     {
         public ProfessionalDTOOutput Professional { get; set; }
         public ClientDTOOutput Client { get; set; }
-        public EnterpriseDTOOutput Enterprise { get; set; }
+        public long EnterpriseId { get; set; }
         public SchedulingTypeDTOOutput SchedulingType { get; set; }
         public DateTime ScheduledDate { get; set; }
         public Status Status { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Domain.DTOs.Enterprise;
 using Domain.Entities;
 using Domain.Ports.Enterprise;
+using Infra.Data.Repositories.Base;
 using Infrastructure.Data;
 
 namespace Infra.Data.Repositories

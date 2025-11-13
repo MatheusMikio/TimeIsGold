@@ -284,9 +284,9 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("CRO", "O CRO é obrigatório."));
                 return false;
             }
-            if (!Regex.IsMatch(cro, @"^CRO[-\s]?[A-Z]{2}\s?\d{1,6}$"))
+            if (!Regex.IsMatch(cro, @"^CRO[\/\-\s]?[A-Z]{2}\s?\d{1,6}$"))
             {
-                messages.Add(new ErrorMessage("CRO", "Formato de CRO inválido. Ex: CRO-SP 12345."));
+                messages.Add(new ErrorMessage("CRO", "Formato de CRO inválido. Ex: CRO/SP 12345."));
                 return false;
             }
             return true;

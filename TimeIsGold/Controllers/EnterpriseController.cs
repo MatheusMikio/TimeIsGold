@@ -6,11 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace TimeIsGold.Controllers
 {
-    [Route("enterprise-teste")]
+    [Route("api/[controller]")]
     [ApiController]
     public class EnterpriseController : BaseController<EnterpriseDTOOutput, IEnterpriseService>
     {
-
         public EnterpriseController(IEnterpriseService service) : base(service)
         {
         }
@@ -18,7 +17,6 @@ namespace TimeIsGold.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] EnterpriseDTO enterpriseDTO)
         {
-            Console.WriteLine("Entrou no Create");
             var enterprise = _service.Create(enterpriseDTO, out List<ErrorMessage> errors);
             if (enterprise != null)
                 return Ok(enterprise);

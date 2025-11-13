@@ -10,6 +10,7 @@ using Domain.Ports.SchedulingType;
 using Domain.Ports.Client;
 using Domain.Ports.Enterprise;
 using Domain.Ports.Professional;
+using Domain.Ports.Scheduling;
 
 namespace TimeIsGold
 {
@@ -39,6 +40,9 @@ namespace TimeIsGold
 
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
+            builder.Services.AddScoped<ISchedulingService, SchedulingService>();
+            builder.Services.AddScoped<ISchedulingRepository, SchedulingRepository>();
 
             builder.Services.AddScoped<ISchedulingTypeService, SchedulingTypeService>();
             builder.Services.AddScoped<ISchedulingTypeRepository, SchedulingTypeRepository>();
