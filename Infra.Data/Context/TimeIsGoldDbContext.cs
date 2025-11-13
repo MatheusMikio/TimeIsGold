@@ -16,14 +16,9 @@ namespace Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Relacionamento muitos-para-muitos entre Client e Enterprise
-            modelBuilder.Entity<Enterprise>()
-                .HasMany(e => e.Clients)
-                .WithMany(c => c.Enterprises);
-
             // Relacionamento um-para-muitos entre Enterprise e Professional
             modelBuilder.Entity<Enterprise>()
-                .HasMany(e => e.Professionals) 
+                .HasMany(e => e.Professionals)
                 .WithOne(p => p.Enterprise)
                 .HasForeignKey(p => p.EnterpriseId);
 
@@ -39,9 +34,16 @@ namespace Infrastructure.Data
                 .WithOne(e => e.Plan)
                 .HasForeignKey(e => e.PlanId);
 
-            // Marcar Address como tipo complexo (owned)
+            //Marcar Address como tipo complexo(owned)
             modelBuilder.Entity<Enterprise>()
-                .OwnsOne(e => e.Address);
+                .OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.Street).HasColumnName("Address_Street");
+                    address.Property(a => a.Number).HasColumnName("Address_Number");
+                    address.Property(a => a.City).HasColumnName("Address_City");
+                    address.Property(a => a.State).HasColumnName("Address_State");
+                    address.Property(a => a.Country).HasColumnName("Address_Country");
+                });
 
             // Adicionando relacionamentos para Scheduling
             modelBuilder.Entity<Scheduling>()

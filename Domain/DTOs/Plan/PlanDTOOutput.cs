@@ -1,5 +1,5 @@
 ﻿using Application.DTOs.Enterprise;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace Application.DTOs.Plan
     {
         public int Level { get; set; }
         public decimal Value { get; set; }
-        public int ScheduleTypeLimit { get; set; }
+        public int ProfessionalNumberLimit { get; set; }
         public IList<EnterpriseDTOOutput> ? Enterprises { get; set; }
     }
 }

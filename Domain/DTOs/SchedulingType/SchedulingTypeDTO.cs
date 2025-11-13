@@ -10,6 +10,7 @@ namespace Application.DTOs.SchedulingType
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public decimal Value { get; set; }
         public long EnterpriseId { get; set; }
     }
 }

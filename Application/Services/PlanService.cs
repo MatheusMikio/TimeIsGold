@@ -2,7 +2,7 @@
 using AutoMapper;
 using Domain.DTOs.Plan;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Plan;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ namespace Application.Services
 
             if (valid)
             {
-                Plan planEntity = _repository.GetById<Plan>(entity.Id);
+                Plan ? planEntity = _repository.GetById<Plan>(entity.Id);
 
                 if (planEntity == null)
                 {
@@ -56,10 +56,8 @@ namespace Application.Services
 
                 try
                 {
-                    planEntity.Value = entity.Value;
                     planEntity.Level = (PlanLevel)entity.Level;
                     planEntity.ChangedAt = DateTime.UtcNow;
-                    planEntity.ScheduleTypeLimit = entity.ScheduleTypeLimit;
                     _repository.Update(planEntity);
                 }
                 catch (Exception ex)
@@ -77,26 +75,20 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (plan.Level < 1 || plan.Level > 3)
+            if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
-                validation = false;
+                return false;
             }
 
-            if (plan.Value < 100)
+            if (repository.GetLevel(plan.Level))
             {
-                messages.Add(new ErrorMessage("Plano", "O valor do plano não pode ser menor que R$100,00"));
-                validation = false;
-            }
-
-            if (plan.ScheduleTypeLimit < 5)
-            {
-                messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
+                messages.Add(new ErrorMessage("Plano", "Já existe um plano com esse nível"));
+                return false;
             }
 
             return validation;
         }
-    
 
         public static bool ValidateUpdate(PlanDTOUpdate plan, out List<ErrorMessage> messages, IPlanRepository repository)
         {
@@ -106,11 +98,10 @@ namespace Application.Services
 
             messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
-            if (repository.IsUnique(plan))
+            if (!repository.IsUnique(plan))
             {
                 messages.Add(new ErrorMessage("Plano", "Já existe um plano nesse formato"));
-                validation = false;
-                return validation;
+                return false;
             }
 
             Plan ? planDb = repository.GetById<Plan>(plan.Id);
@@ -118,25 +109,13 @@ namespace Application.Services
             if (planDb == null)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano não encontrado")) ;
-                validation = false;
-                return validation;
+                return false;
             }
 
-            if (plan.Level < 1 || plan.Level > 3)
+            if (!Enum.IsDefined(typeof(PlanLevel), (PlanLevel)plan.Level))
             {
                 messages.Add(new ErrorMessage("Nível", "Nivel do plano indisponivel"));
                 validation = false;
-            }
-
-            if (plan.Value < 100)
-            {
-                messages.Add(new ErrorMessage("Plano", "O valor do plano não pode ser menor que R$100,00"));
-                validation = false;
-            }
-
-            if (plan.ScheduleTypeLimit < 5)
-            {
-                messages.Add(new ErrorMessage("Plano", "O numero limite de agendamentos não pode ser inferior a 5."));
             }
 
             return validation;

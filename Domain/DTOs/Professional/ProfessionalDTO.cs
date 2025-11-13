@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.DTOs.Professional
+﻿namespace Application.DTOs.Professional
 {
     public class ProfessionalDTO
     {
@@ -14,5 +8,10 @@ namespace Application.DTOs.Professional
         public string Password { get; set; }
         public long EnterpriseId { get; set; }
         public int Type{ get; set; }
+        public string Phone { get; set; }
+        public string Function { get; set; }
+        public string About { get; set; }
+        public string ActuationTime { get; set; }
+        public string CRO { get; set; }
     }
 }

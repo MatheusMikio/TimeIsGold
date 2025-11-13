@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Base;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +24,7 @@ namespace TimeIsGold.Controllers
         {
             if (page < 1 || size < 1) return BadRequest("'Page' e 'Size' devem ser maiores que 0.");
 
-            return string.IsNullOrEmpty(q) ? Ok(_service.GetAll<TEntity>(page, size)) : Ok(_service.Get<TEntity>(q));
+            return Ok(_service.GetAll<TEntity>(page, size, q));
         }
 
         [HttpGet("{id}")]
@@ -42,9 +42,9 @@ namespace TimeIsGold.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            bool sucess = _service.Delete<TEntity>(id);
+            bool success = _service.Delete<TEntity>(id);
 
-            if (!sucess) return NotFound("Não encontrado.");
+            if (!success) return NotFound("Não encontrado.");
 
             return NoContent();
         }

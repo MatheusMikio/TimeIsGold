@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Entities;
-using Domain.Ports;
+using Domain.Ports.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,15 +24,13 @@ namespace Application.Services
             _mapper = mapper;
         }
         
-        public List<Thing> GetAll<Thing>(int page, int size)
+        public List<Thing> GetAll<Thing>(int page, int size, string filter = null)
         {
-            List<TEntity> entities = _repository.GetAll<TEntity>(page, size);
-            return _mapper.Map<List<Thing>>(entities);
-        }
+            List<TEntity> entities = string.IsNullOrEmpty(filter)
+                ? _repository.GetAll<TEntity>(page, size)
+                : _repository.GetByTextFilter<TEntity>(page, size, filter);
 
-        public List<Thing> Get<Thing>(string q)
-        {
-            throw new NotImplementedException();
+            return _mapper.Map<List<Thing>>(entities);
         }
 
         public Thing GetById<Thing>(long id)

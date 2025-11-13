@@ -10,7 +10,5 @@ namespace Domain.DTOs.Plan
     {
         public long Id { get; set; }
         public int Level { get; set; }
-        public decimal Value { get; set; }
-        public int ScheduleTypeLimit { get; set; }
     }
 }

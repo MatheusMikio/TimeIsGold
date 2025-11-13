@@ -9,7 +9,6 @@ namespace Application.DTOs.Plan
     public class PlanDTO
     {
         public int Level { get; set; }
-        public decimal Value { get; set; }
-        public int ScheduleTypeLimit { get; set; }
+
     }
 }

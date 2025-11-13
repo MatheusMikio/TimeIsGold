@@ -2,13 +2,9 @@
 using Application.DTOs.Plan;
 using Application.DTOs.Professional;
 using Application.DTOs.SchedulingType;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Application.DTOs.Enterprise
 {
@@ -17,9 +13,8 @@ namespace Application.DTOs.Enterprise
         public string Name { get; set; }
         public string Cnpj { get; set; }
         public Address Address { get; set; }
-        public PlanDTOOutput Plan { get; set; }
+        public long PlanId { get; set; }
         public IList<SchedulingTypeDTOOutput> ? SchedulingType { get; set; }
         public IList<ProfessionalDTOOutput> ? Professionals { get; set; }
-        public IList<ClientDTOOutput> ? Clients { get; set; }
     }
 }

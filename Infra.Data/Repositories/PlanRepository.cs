@@ -1,5 +1,6 @@
 ﻿using Domain.DTOs.Plan;
-using Domain.Ports;
+using Domain.Ports.Plan;
+using Infra.Data.Repositories.Base;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -15,16 +16,13 @@ namespace Infra.Data.Repositories
         {
         }
 
-        public bool IsUnique(PlanDTOUpdate plan)
-        {
-            return _context.Plans.Any(
-                p => p.Id != plan.Id 
-                && (
-                    (int)p.Level == plan.Level 
-                    || p.Value == plan.Value
-                    || p.ScheduleTypeLimit == plan.ScheduleTypeLimit
-                )
-            );
-        }
+        public bool IsUnique(PlanDTOUpdate plan) => !_context.Plans.Any(
+            p => p.Id != plan.Id && 
+            (
+                (int)p.Level == plan.Level
+            )
+        );
+
+        public bool GetLevel(int level) => _context.Plans.Any(p => (int)p.Level == level);
     }
 }

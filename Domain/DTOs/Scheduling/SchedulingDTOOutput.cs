@@ -1,7 +1,8 @@
 ﻿using Application.DTOs.Client;
+using Application.DTOs.Enterprise;
 using Application.DTOs.Professional;
 using Application.DTOs.SchedulingType;
-using Domain.Entities.BaseEntities;
+using Domain.DTOs.Base;
 using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Application.DTOs.Scheduling
     {
         public ProfessionalDTOOutput Professional { get; set; }
         public ClientDTOOutput Client { get; set; }
+        public long EnterpriseId { get; set; }
         public SchedulingTypeDTOOutput SchedulingType { get; set; }
         public DateTime ScheduledDate { get; set; }
         public Status Status { get; set; }
