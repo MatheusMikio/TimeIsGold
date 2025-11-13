@@ -7,6 +7,9 @@ using Application.Services;
 using Infra.Data.Repositories;
 using Domain.Ports.Plan;
 using Domain.Ports.SchedulingType;
+using Domain.Ports.Client;
+using Domain.Ports.Enterprise;
+using Domain.Ports.Professional;
 
 namespace TimeIsGold
 {
@@ -31,11 +34,20 @@ namespace TimeIsGold
             builder.Services.AddSingleton(mapper);
 
             //Injeção de dependência dos repositórios e serviços
+            builder.Services.AddScoped<IClientService, ClientService>();
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
+
             builder.Services.AddScoped<IPlanService, PlanService>();
             builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
             builder.Services.AddScoped<ISchedulingTypeService, SchedulingTypeService>();
             builder.Services.AddScoped<ISchedulingTypeRepository, SchedulingTypeRepository>();
+
+            builder.Services.AddScoped<IEnterpriseService, EnterpriseService>();
+            builder.Services.AddScoped<IEnterpriseRepository, EnterpriseRepository>();
+
+            builder.Services.AddScoped<IProfessionalService, ProfessionalService>();
+            builder.Services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

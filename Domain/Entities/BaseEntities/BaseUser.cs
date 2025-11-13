@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+using Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,7 @@ namespace Domain.Entities.BaseEntities
         public string Cpf { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+        public string Phone { get; set; }
         public bool Status { get; set; }
         public IList<Scheduling> ? Schedulings { get; set; }
         protected BaseUser(){ }

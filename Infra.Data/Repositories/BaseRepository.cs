@@ -34,11 +34,16 @@ namespace Infra.Data.Repositories
             {
                 query = typeof(Thing).Name switch
                 {
-                    nameof(
-                        Enterprise) => query.Where(e => EF.Property<string>(e, "Name")
-                        .Contains(searchText) ||
-                        EF.Property<string>(e, "Cnpj").Contains(searchText)
-                    ),
+                    nameof(Enterprise) => query
+                        .Include("Address")
+                        .Where(e =>
+                            (e as Enterprise).Name.Contains(searchText) ||
+                            (e as Enterprise).Cnpj.Contains(searchText) ||
+                            (e as Enterprise).Address.Street.Contains(searchText) ||
+                            (e as Enterprise).Address.City.Contains(searchText) ||
+                            (e as Enterprise).Address.State.Contains(searchText) ||
+                            (e as Enterprise).Address.Country.Contains(searchText)
+                        ),
 
                     nameof(
                         Client) => query.Where(c => EF.Property<string>(c, "Name")
