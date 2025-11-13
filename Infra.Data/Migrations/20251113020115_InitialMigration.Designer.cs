@@ -12,33 +12,18 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infra.Data.Migrations
 {
     [DbContext(typeof(TimeIsGoldDbContext))]
-    [Migration("20251027192851_SchedulingEnterpriseId")]
-    partial class SchedulingEnterpriseId
+    [Migration("20251113020115_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("ClientEnterprise", b =>
-                {
-                    b.Property<long>("ClientsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("EnterprisesId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("ClientsId", "EnterprisesId");
-
-                    b.HasIndex("EnterprisesId");
-
-                    b.ToTable("ClientEnterprise");
-                });
 
             modelBuilder.Entity("Domain.Entities.Client", b =>
                 {
@@ -67,6 +52,10 @@ namespace Infra.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -146,6 +135,17 @@ namespace Infra.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("About")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ActuationTime")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CRO")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("ChangedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -163,11 +163,19 @@ namespace Infra.Data.Migrations
                     b.Property<long>("EnterpriseId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Function")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -264,21 +272,6 @@ namespace Infra.Data.Migrations
                     b.ToTable("SchedulingTypes");
                 });
 
-            modelBuilder.Entity("ClientEnterprise", b =>
-                {
-                    b.HasOne("Domain.Entities.Client", null)
-                        .WithMany()
-                        .HasForeignKey("ClientsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Enterprise", null)
-                        .WithMany()
-                        .HasForeignKey("EnterprisesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain.Entities.Enterprise", b =>
                 {
                     b.HasOne("Domain.Entities.Plan", "Plan")
@@ -294,23 +287,28 @@ namespace Infra.Data.Migrations
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("text")
+                                .HasColumnName("Address_City");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("text")
+                                .HasColumnName("Address_Country");
 
                             b1.Property<string>("Number")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("text")
+                                .HasColumnName("Address_Number");
 
                             b1.Property<string>("State")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("text")
+                                .HasColumnName("Address_State");
 
                             b1.Property<string>("Street")
                                 .IsRequired()
-                                .HasColumnType("text");
+                                .HasColumnType("text")
+                                .HasColumnName("Address_Street");
 
                             b1.HasKey("EnterpriseId");
 

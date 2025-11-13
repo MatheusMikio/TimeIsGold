@@ -23,7 +23,9 @@ namespace Infra.Data.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Cpf = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false)
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,8 +39,8 @@ namespace Infra.Data.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Level = table.Column<int>(type: "integer", nullable: false),
-                    value = table.Column<decimal>(type: "numeric", nullable: false),
-                    ScheduleTypeLimit = table.Column<int>(type: "integer", nullable: false),
+                    Value = table.Column<decimal>(type: "numeric", nullable: false),
+                    ProfessionalNumberLimit = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -76,30 +78,6 @@ namespace Infra.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClientEnterprise",
-                columns: table => new
-                {
-                    ClientsId = table.Column<long>(type: "bigint", nullable: false),
-                    EnterprisesId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClientEnterprise", x => new { x.ClientsId, x.EnterprisesId });
-                    table.ForeignKey(
-                        name: "FK_ClientEnterprise_Clients_ClientsId",
-                        column: x => x.ClientsId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClientEnterprise_Enterprises_EnterprisesId",
-                        column: x => x.EnterprisesId,
-                        principalTable: "Enterprises",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Professionals",
                 columns: table => new
                 {
@@ -107,12 +85,18 @@ namespace Infra.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     EnterpriseId = table.Column<long>(type: "bigint", nullable: false),
+                    Function = table.Column<string>(type: "text", nullable: false),
+                    About = table.Column<string>(type: "text", nullable: true),
+                    ActuationTime = table.Column<string>(type: "text", nullable: false),
+                    CRO = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Cpf = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false)
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -133,6 +117,7 @@ namespace Infra.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<decimal>(type: "numeric", nullable: false),
                     EnterpriseId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ChangedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -157,6 +142,7 @@ namespace Infra.Data.Migrations
                     ProfessionalId = table.Column<long>(type: "bigint", nullable: false),
                     ClientId = table.Column<long>(type: "bigint", nullable: false),
                     SchedulingTypeId = table.Column<long>(type: "bigint", nullable: false),
+                    EnterpriseId = table.Column<long>(type: "bigint", nullable: false),
                     ScheduledDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -169,6 +155,12 @@ namespace Infra.Data.Migrations
                         name: "FK_Schedulings_Clients_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Schedulings_Enterprises_EnterpriseId",
+                        column: x => x.EnterpriseId,
+                        principalTable: "Enterprises",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -186,11 +178,6 @@ namespace Infra.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClientEnterprise_EnterprisesId",
-                table: "ClientEnterprise",
-                column: "EnterprisesId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Enterprises_PlanId",
                 table: "Enterprises",
                 column: "PlanId");
@@ -204,6 +191,11 @@ namespace Infra.Data.Migrations
                 name: "IX_Schedulings_ClientId",
                 table: "Schedulings",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Schedulings_EnterpriseId",
+                table: "Schedulings",
+                column: "EnterpriseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedulings_ProfessionalId",
@@ -224,9 +216,6 @@ namespace Infra.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ClientEnterprise");
-
             migrationBuilder.DropTable(
                 name: "Schedulings");
 

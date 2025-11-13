@@ -40,7 +40,7 @@ namespace TimeIsGold.Controllers
             return BadRequest(errors);
         }
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO loginDto)
         {
             if (loginDto == null)
