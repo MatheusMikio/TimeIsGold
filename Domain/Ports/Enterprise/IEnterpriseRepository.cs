@@ -9,6 +9,6 @@ namespace Domain.Ports.Enterprise
     {
         public bool IsUnique(EnterpriseDTOUpdate enterprise);
         public bool CnpjExists(string cnpj);
-        public Entities.Enterprise GetByCnpj(string cnpj);
+        public Entities.Enterprise ? GetByCnpj(string cnpj);
     }
 }
