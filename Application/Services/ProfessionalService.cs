@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Application.DTOs.Client;
 using Application.DTOs.Professional;
+using Application.Services.Base;
 using AutoMapper;
 using Domain.DTOs.Login;
 using Domain.DTOs.Professional;
@@ -21,29 +22,22 @@ namespace Application.Services
         {
             bool valid = Validate(professionalDTO, out messages, _repository);
 
-            if (!valid)
-                return false;
-
-            try
+            if (valid)
             {
-                Professional entity = _mapper.Map<Professional>(professionalDTO);
-                entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(professionalDTO.Password); // HASH
-                professionalDTO.Password = null;
-                _repository.Create(entity);
-                return true;
+                try
+                {
+                    Professional entity = _mapper.Map<Professional>(professionalDTO);
+                    entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(professionalDTO.Password);
+                    _repository.Create(entity);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    messages.Add(new ErrorMessage("Sistema", $"Erro inesperado ao salvar o profissional."));
+                    return false;
+                }
             }
-            catch (Exception ex)
-            {
-
-                var errorMessage = ex.Message;
-
-                //Pega o erro interno do EF
-                if (ex.InnerException != null)
-                    errorMessage += $" | Detalhe: {ex.InnerException.Message}";
-
-                messages.Add(new ErrorMessage("Sistema", $"Erro inesperado ao salvar o profissional: {errorMessage}"));
-                return false;
-            }
+            return false;
         }
 
         public void Update(ProfessionalDTOUpdate entity, out List<ErrorMessage> messages)
@@ -73,7 +67,6 @@ namespace Application.Services
                     if (!string.IsNullOrWhiteSpace(entity.Password))
                     {
                         professionalEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(entity.Password);
-                        entity.Password = null;
                     }
                     _repository.Update(professionalEntity);
                 }

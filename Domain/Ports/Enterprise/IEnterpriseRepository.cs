@@ -8,7 +8,7 @@ namespace Domain.Ports.Enterprise
     public interface IEnterpriseRepository : IBaseRepository
     {
         public bool IsUnique(EnterpriseDTOUpdate enterprise);
-        bool CnpjExists(string cnpj);
-        Entities.Enterprise? GetByCnpj(string cnpj);
+        public bool CnpjExists(string cnpj);
+        public Entities.Enterprise GetByCnpj(string cnpj);
     }
 }

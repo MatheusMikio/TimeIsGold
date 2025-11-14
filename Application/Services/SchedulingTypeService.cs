@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Scheduling;
 using Application.DTOs.SchedulingType;
+using Application.Services.Base;
 using AutoMapper;
 using Domain.DTOs.SchedulingType;
 using Domain.Entities;

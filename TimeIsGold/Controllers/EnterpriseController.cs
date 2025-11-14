@@ -15,11 +15,9 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] EnterpriseDTO enterpriseDTO)
+        public IActionResult Create([FromBody] EnterpriseDTO enterpriseDTO)
         {
-            var enterprise = _service.Create(enterpriseDTO, out List<ErrorMessage> errors);
-            if (enterprise != null)
-                return Ok(enterprise);
+            if (_service.Create(enterpriseDTO, out List<ErrorMessage> errors)) return CreatedAtAction(nameof(Create), enterpriseDTO);
 
             return BadRequest(errors);
         }

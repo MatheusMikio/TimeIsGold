@@ -24,7 +24,7 @@ namespace Infra.Data.Repositories
             return _context.Enterprises.Any(enterprise => enterprise.Cnpj == cnpj);
         }
 
-        public Enterprise? GetByCnpj(string cnpj)
+        public Enterprise ? GetByCnpj(string cnpj)
         {
             return _context.Enterprises.FirstOrDefault(e => e.Cnpj == cnpj);
         }

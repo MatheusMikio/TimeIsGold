@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Scheduling;
+using Application.Services.Base;
 using AutoMapper;
 using Domain.DTOs.Scheduling;
 using Domain.Entities;
@@ -8,13 +9,7 @@ using Domain.Ports.Professional;
 using Domain.Ports.Scheduling;
 using Domain.Ports.SchedulingType;
 using Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Services
 {
@@ -174,14 +169,14 @@ namespace Application.Services
                 return false;
             }
 
-            Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
             if (clientDb == null)
             {
                 messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
                 return false;
             }
 
-            Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
             if (enterpriseDb == null)
             {
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
@@ -225,7 +220,6 @@ namespace Application.Services
             IClientRepository clientRepository,
             IProfessionalRepository professionalRepository,
             IEnterpriseRepository enterpriseRepository
-
         )
         {
             ValidationContext validationContext = new(scheduling);
@@ -241,21 +235,21 @@ namespace Application.Services
                 return false;
             }
 
-            Professional? professionalDb = professionalRepository.GetById<Professional>(scheduling.ProfessionalId);
+            Professional ? professionalDb = professionalRepository.GetById<Professional>(scheduling.ProfessionalId);
             if (professionalDb == null)
             {
                 messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
                 return false;
             }
 
-            Client? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
+            Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
             if (clientDb == null)
             {
                 messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
                 return false;
             }
 
-            Enterprise? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
+            Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
             if (enterpriseDb == null)
             {
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
@@ -267,7 +261,7 @@ namespace Application.Services
                 messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
                 return false;
             }
-            SchedulingType? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
+            SchedulingType ? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
             if (schedulingTypeDb == null)
             {
                 messages.Add(new ErrorMessage("Tipo de Agendamento", "Tipo de agendamento não encontrado"));
@@ -282,9 +276,7 @@ namespace Application.Services
 
             if (!repository.IsUnique(scheduling))
             {
-                messages.Add(
-                    new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora")
-                );
+                messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
                 return false;
             }
             return validation;
