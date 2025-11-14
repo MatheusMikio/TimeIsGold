@@ -49,10 +49,6 @@ namespace Application.Mapping
             CreateMap<Plan, PlanDTOOutput>()
                .ForMember(dest => dest.Enterprises, opt => opt.Ignore());
 
-            CreateMap<Client, ClientDTOOutput>()
-                .ForMember(dest => dest.Schedulings, opt => opt.Ignore())
-                .ForMember(dest => dest.Enterprises, opt => opt.Ignore());
-
             CreateMap<Professional, ProfessionalDTOOutput>()
                 .ForMember(dest => dest.Schedulings, opt => opt.Ignore())
                 .ForMember(dest => dest.EnterpriseId, opt => opt.MapFrom(src => src.EnterpriseId));
