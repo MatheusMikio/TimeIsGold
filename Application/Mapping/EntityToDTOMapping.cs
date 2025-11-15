@@ -20,7 +20,7 @@ namespace Application.Mapping
     {
         public EntityToDTOMapping()
         {
-            //Mapeamento de Entity para DTO Output - Com tratamento de ciclos
+            //Mapeamento de Entity para DTO Output
             CreateMap<Client, ClientDTOOutput>()
                 .ForMember(dest => dest.Schedulings, opt => opt.Ignore());
             
