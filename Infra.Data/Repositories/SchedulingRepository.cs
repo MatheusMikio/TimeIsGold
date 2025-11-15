@@ -45,6 +45,48 @@ namespace Infra.Data.Repositories
             );
         }
 
+        public List<Scheduling> GetSchedulingsProfessional(long id)
+        {
+            DateTime today = DateTime.UtcNow.Date;
+            DateTime tomorrow = today.AddDays(1);
+            return _context.Schedulings
+                .Include(s => s.Professional)
+                .Include(s => s.Client)
+                .Include(s => s.SchedulingType)
+                .Where(s => s.ProfessionalId == id &&
+                            s.ScheduledDate >= today &&
+                            s.ScheduledDate < tomorrow)
+                .ToList();
+        }
+
+        public Dictionary<Status, int> GetTodaySchedulingsProfessional(long id)
+        {
+            DateTime today = DateTime.UtcNow.Date;
+            DateTime tomorrow = today.AddDays(1);
+
+            var schedulings = _context.Schedulings
+                .Where(s => s.ProfessionalId == id &&
+                    s.ScheduledDate >= today &&
+                    s.ScheduledDate < tomorrow)
+                .ToList();
+
+            var grouped = schedulings
+                .GroupBy(s => s.Status)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var result = new Dictionary<Status, int>
+            {
+                { Status.Pendent, grouped.ContainsKey(Status.Pendent) ? grouped[Status.Pendent] : 0 },
+                { Status.InProgress, grouped.ContainsKey(Status.InProgress) ? grouped[Status.InProgress] : 0 },
+                { Status.Finished, grouped.ContainsKey(Status.Finished) ? grouped[Status.Finished] : 0 },
+                { Status.Canceled, grouped.ContainsKey(Status.Canceled) ? grouped[Status.Canceled] : 0 }
+            };
+
+            result.Add((Status)0, schedulings.Count);
+
+            return result;
+        }
+
         public bool GetSchedulingByDate(long professionalId, long clientId, DateTime scheduledDate)
         {
             DateTime startRange = DateTime.SpecifyKind(scheduledDate.AddMinutes(-30), DateTimeKind.Utc);
@@ -53,6 +95,19 @@ namespace Infra.Data.Repositories
             return _context.Schedulings.Any(
                 s => s.ProfessionalId == professionalId &&
                      s.ClientId == clientId &&
+                     s.ScheduledDate >= startRange &&
+                     s.ScheduledDate < endRange
+            );
+        }
+
+
+        public bool GetSchedulingByDate(long professionalId, DateTime scheduledDate)
+        {
+            DateTime startRange = DateTime.SpecifyKind(scheduledDate.AddMinutes(-30), DateTimeKind.Utc);
+            DateTime endRange = DateTime.SpecifyKind(scheduledDate.AddMinutes(30), DateTimeKind.Utc);
+
+            return _context.Schedulings.Any(
+                s => s.ProfessionalId == professionalId &&
                      s.ScheduledDate >= startRange &&
                      s.ScheduledDate < endRange
             );
@@ -81,8 +136,7 @@ namespace Infra.Data.Repositories
                 .Include(s => s.Professional)
                 .Include(s => s.Client)
                 .Include(s => s.SchedulingType)
-                .Include(s => s.Enterprise)
-                .Where(s => s.EnterpriseId == id &&
+                .Where(s => s.ProfessionalId == id &&
                             s.ScheduledDate >= startDate &&
                             s.ScheduledDate < endDate)
                 .ToList();
@@ -90,7 +144,7 @@ namespace Infra.Data.Repositories
 
         public int GetPendentsSchedulings(long id)
         {
-            return _context.Schedulings.Count(s => s.Professional.EnterpriseId == id &&
+            return _context.Schedulings.Count(s => s.EnterpriseId == id &&
                 s.Status == Status.Pendent
             );
         }

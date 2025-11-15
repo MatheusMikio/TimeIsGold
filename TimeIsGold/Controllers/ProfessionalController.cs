@@ -5,6 +5,7 @@ using Domain.DTOs.Professional;
 using Domain.Entities;
 using Domain.Ports.Professional;
 using Microsoft.AspNetCore.Mvc;
+using TimeIsGold.Controllers.Base;
 
 namespace TimeIsGold.Controllers
 {

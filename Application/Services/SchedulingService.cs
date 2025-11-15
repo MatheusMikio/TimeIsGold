@@ -27,13 +27,11 @@ namespace Application.Services
             IClientRepository clientRepository,
             IProfessionalRepository professionalRepository,
             IEnterpriseRepository enterpriseRepository
-
         ) : base(
             repository,
             mapper
             )
         {
-
             _clientRepository = clientRepository;
             _professionalRepository = professionalRepository;
             _enterpriseRepository = enterpriseRepository;
@@ -44,9 +42,9 @@ namespace Application.Services
         {
             messages = new List<ErrorMessage>();
 
-            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
+            Enterprise ? enterpriseDb = _repository.GetById<Enterprise>(id);
 
-            if (enterprise == null)
+            if (enterpriseDb == null)
             {
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
                 return 0;
@@ -55,11 +53,50 @@ namespace Application.Services
             return _repository.GetTodaySchedulings(id);
         }
 
+        public List<SchedulingDTOOutput> GetSchedulingToday(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+            Professional ? professional = _repository.GetById<Professional>(id);
+            if (professional == null)
+            {
+                messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+                return new List<SchedulingDTOOutput>();
+            }
+
+            List<Scheduling> schedulings = _repository.GetSchedulingsProfessional(id);
+
+            return _mapper.Map<List<SchedulingDTOOutput>>(schedulings);
+        }
+
+        public SchedulingStatisticsDTO GetTodaySchedulingsProfessional(long id, out List<ErrorMessage> messages)
+        {
+            messages = new List<ErrorMessage>();
+
+            Professional ? professional = _repository.GetById<Professional>(id);
+
+            if (professional == null)
+            {
+                messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
+                return new SchedulingStatisticsDTO();
+            }
+
+            var statistics = _repository.GetTodaySchedulingsProfessional(id);
+
+            return new SchedulingStatisticsDTO
+            {
+                Total = statistics.ContainsKey((Status)0) ? statistics[(Status)0] : statistics.Values.Sum(),
+                Pendent = statistics[Status.Pendent],
+                InProgress = statistics[Status.InProgress],
+                Finished = statistics[Status.Finished],
+                Canceled = statistics[Status.Canceled]
+            };
+        }
+
         public int GetPendentsSchedulings(long id, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
-            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
-            if (enterprise == null)
+            Enterprise ? enterpriseDb = _repository.GetById<Enterprise>(id);
+            if (enterpriseDb == null)
             {
                 messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
                 return 0;
@@ -70,10 +107,10 @@ namespace Application.Services
         public List<SchedulingDTOOutput> GetSchedulingsByPeriod(long id, PeriodType periodType, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
-            Enterprise? enterprise = _repository.GetById<Enterprise>(id);
-            if (enterprise == null)
+            Professional ? professional = _repository.GetById<Professional>(id);
+            if (professional == null)
             {
-                messages.Add(new ErrorMessage("Empresa", "Empresa não encontrada"));
+                messages.Add(new ErrorMessage("Profissional", "Profissional não encontrado"));
                 return new List<SchedulingDTOOutput>();
             }
 
@@ -145,7 +182,6 @@ namespace Application.Services
                 }
             }
         }
-
         public static bool Validate(
             SchedulingDTO scheduling,
             out List<ErrorMessage> messages,
