@@ -297,7 +297,7 @@ namespace Application.Services
 
             var profesional = _repository.GetByEmail(email);
 
-            if (profesional != null){
+            if (profesional == null){
                 messages.Add(new ErrorMessage("Login", "E-mail ou senha incorretos."));
                 return null;
             }

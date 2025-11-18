@@ -106,7 +106,7 @@ namespace Application.Services
             return validation;
         }
 
-        public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
+        public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IEnterpriseRepository repository)
         {
             ValidationContext validationContext = new(enterprise);
             List<ValidationResult> errors = new();
