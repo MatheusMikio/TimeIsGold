@@ -28,6 +28,7 @@ namespace Application.Services
                 {
                     Professional entity = _mapper.Map<Professional>(professionalDTO);
                     entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(professionalDTO.Password);
+                    entity.Status = true;
                     _repository.Create(entity);
                     return true;
                 }
