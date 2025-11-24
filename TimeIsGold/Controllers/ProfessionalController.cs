@@ -44,7 +44,7 @@ namespace TimeIsGold.Controllers
                 return BadRequest("Dados de login são obrigatórios.");
             }
 
-            ProfessionalDTOOutput logged = _service.Login(loginDto.Email, loginDto.Password, out List<ErrorMessage> messages);
+            LoginResponse logged = _service.Login(loginDto.Email, loginDto.Password, out List<ErrorMessage> messages);
 
             if (logged == null) return Unauthorized(messages);
 

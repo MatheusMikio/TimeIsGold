@@ -3,7 +3,7 @@ using Domain.DTOs.Scheduling;
 using Domain.Entities;
 using Domain.Ports.Scheduling;
 using Domain.ValueObjects;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeIsGold.Controllers.Base;
 
@@ -18,6 +18,7 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpGet("GetTodaySchedulings/{id}")]
+        [Authorize(Policy = "RequiredType")]
         public IActionResult GetTodaySchedulings(long id)
         {
             int schedulings = _service.GetTodaySchedulings(id, out List<ErrorMessage> errors);
@@ -28,6 +29,7 @@ namespace TimeIsGold.Controllers
         }
 
         [HttpGet("GetPendentsSchedulings/{id}")]
+        [Authorize(Policy = "RequiredType")]
         public IActionResult GetPendentsSchedulings(long id)
         {
             int schedulings = _service.GetPendentsSchedulings(id, out List<ErrorMessage> errors);
