@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Services
+namespace Application.Services.Base
 {
     public class BaseService<TDTO, TEntity, TRepository> : IBaseService 
         where TDTO : class 

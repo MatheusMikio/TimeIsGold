@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace TimeIsGold.Controllers
+namespace TimeIsGold.Controllers.Base
 {
     [Route("api/[controller]")]
     [ApiController]

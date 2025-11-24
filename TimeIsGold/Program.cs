@@ -1,16 +1,21 @@
 using Application.Mapping;
+using Application.Services;
+using AutoMapper;
+using Domain.Ports;
+using Domain.Ports.Client;
+using Domain.Ports.Enterprise;
+using Domain.Ports.Plan;
+using Domain.Ports.Professional;
+using Domain.Ports.Scheduling;
+using Domain.Ports.SchedulingType;
+using Domain.ValueObjects;
+using Infra.Data.Repositories;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using AutoMapper;
-using Application.Services;
-using Infra.Data.Repositories;
-using Domain.Ports.Plan;
-using Domain.Ports.SchedulingType;
-using Domain.Ports.Client;
-using Domain.Ports.Enterprise;
-using Domain.Ports.Professional;
-using Domain.Ports.Scheduling;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace TimeIsGold
 {
@@ -53,6 +58,24 @@ namespace TimeIsGold
             builder.Services.AddScoped<IProfessionalService, ProfessionalService>();
             builder.Services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
 
+            //Jwt Configuração para Admin
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequiredType", policy => policy.RequireClaim("Type", "2")); // 2 == Admin
+            });
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings")["SecretKey"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -79,6 +102,7 @@ namespace TimeIsGold
 
             app.UseHttpsRedirection();
             app.UseCors("AllowSpecificOrigin");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 

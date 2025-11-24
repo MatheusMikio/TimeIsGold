@@ -1,9 +1,12 @@
 ﻿using Application.DTOs.Enterprise;
+using Application.Services.Base;
 using AutoMapper;
 using Domain.DTOs.Enterprise;
 using Domain.Entities;
 using Domain.Ports.Base;
 using Domain.Ports.Enterprise;
+using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 
 namespace Application.Services
 {
@@ -13,24 +16,25 @@ namespace Application.Services
         {
         }
 
-        public Enterprise? Create(EnterpriseDTO dto, out List<ErrorMessage> messages)
+        public bool Create(EnterpriseDTO dto, out List<ErrorMessage> messages)
         {
-            if (!Validate(dto, out messages, _repository))
+            bool valid = Validate(dto, out messages, _repository);
+            
+            if (valid)
             {
-                return null;
+                try
+                {
+                    Enterprise entity = _mapper.Map<Enterprise>(dto);
+                    _repository.Create(entity);
+                    return true;
+                }
+                catch
+                {
+                    messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar a empresa"));
+                    return false;
+                }
             }
-
-            try
-            {
-                Enterprise entity = _mapper.Map<Enterprise>(dto);
-                _repository.Create(entity);
-                return entity;
-            }
-            catch
-            {
-                messages.Add(new ErrorMessage("Sistema", "Erro inesperado ao salvar a empresa"));
-                return null;
-            }
+            return false;
         }
 
         public void Update(EnterpriseDTOUpdate entity, out List<ErrorMessage> messages)
@@ -62,88 +66,91 @@ namespace Application.Services
             }
         }
 
-        public static bool Validate(EnterpriseDTO enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
+        public static bool Validate(EnterpriseDTO enterprise, out List<ErrorMessage> messages, IEnterpriseRepository repository)
         {
-            messages = new List<ErrorMessage>();
-            bool isValid = true;
+            ValidationContext validationContext = new(enterprise);
+            List<ValidationResult> errors = new();
+            bool validation = Validator.TryValidateObject(enterprise, validationContext, errors, true);
+            messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
             if (string.IsNullOrEmpty(enterprise.Name))
             {
                 messages.Add(new ErrorMessage("Nome", "O nome da empresa é obrigatório."));
-                isValid = false;
+                validation = false;
             }
 
             if (string.IsNullOrEmpty(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ da empresa é obrigatório."));
-                isValid = false;
+                validation = false;
             }
 
             if (!ValidateCnpj(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
-                isValid = false;
+                validation = false;
             }
 
-            var existing = repository.GetByTextFilter<Enterprise>(1, 1, enterprise.Cnpj).FirstOrDefault();
+            var existing = repository.GetByCnpj(enterprise.Cnpj);
             if (existing != null)
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
-                isValid = false;
+                validation = false;
             }
 
             if (enterprise.PlanId <= 0)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
-                isValid = false;
+                validation = false;
             }
-
-            return isValid;
+            return validation;
         }
 
-        public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IBaseRepository repository)
+        public static bool ValidateUpdate(EnterpriseDTOUpdate enterprise, out List<ErrorMessage> messages, IEnterpriseRepository repository)
         {
-            messages = new List<ErrorMessage>();
-            bool isValid = true;
+            ValidationContext validationContext = new(enterprise);
+            List<ValidationResult> errors = new();
+            bool validation = Validator.TryValidateObject(enterprise, validationContext, errors, true);
+            messages = errors.Select(erro => new ErrorMessage(erro.MemberNames.FirstOrDefault(), erro.ErrorMessage)).ToList();
 
             if (enterprise.Id <= 0)
             {
                 messages.Add(new ErrorMessage("Id", "Id inválido."));
-                isValid = false;
+                validation = false;
             }
 
             if (string.IsNullOrWhiteSpace(enterprise.Name))
             {
                 messages.Add(new ErrorMessage("Nome", "O nome da empresa é obrigatório."));
-                isValid = false;
+                validation = false;
             }
 
             if (string.IsNullOrWhiteSpace(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ da empresa é obrigatório."));
-                isValid = false;
+                validation = false;
             }
 
             if (!ValidateCnpj(enterprise.Cnpj))
             {
                 messages.Add(new ErrorMessage("Cnpj", "CNPJ inválido."));
-                isValid = false;
+                validation = false;
             }
 
             var existing = ((IEnterpriseRepository)repository).GetByCnpj(enterprise.Cnpj);
             if (existing != null && existing.Id != enterprise.Id)
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));
-                isValid = false;
+                validation = false;
             }
 
             if (enterprise.PlanId <= 0)
             {
                 messages.Add(new ErrorMessage("Plano", "Plano inválido."));
-                isValid = false;
+                validation = false;
             }
 
-            return isValid;
+            return validation;
         }
 
         public static bool ValidateCnpj(string cnpj)

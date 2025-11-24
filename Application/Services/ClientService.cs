@@ -7,6 +7,7 @@ using Domain.Ports.Client;
 using System.Text.RegularExpressions;
 using Domain.DTOs.Login;
 using Domain.ValueObjects;
+using Application.Services.Base;
 
 namespace Application.Services
 {

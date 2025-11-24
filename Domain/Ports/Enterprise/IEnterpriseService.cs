@@ -7,7 +7,8 @@ namespace Domain.Ports.Enterprise
 {
     public interface IEnterpriseService : IBaseService
     {
-        Entities.Enterprise? Create(EnterpriseDTO dto, out List<ErrorMessage> messages);
-        void Update(EnterpriseDTOUpdate entity, out List<ErrorMessage> messages);
+        
+        public bool Create(EnterpriseDTO dto, out List<ErrorMessage> messages);
+        public void Update(EnterpriseDTOUpdate entity, out List<ErrorMessage> messages);
     }
 }

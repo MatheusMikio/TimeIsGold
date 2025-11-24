@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Ports.Plan;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TimeIsGold.Controllers.Base;
 
 namespace TimeIsGold.Controllers
 {

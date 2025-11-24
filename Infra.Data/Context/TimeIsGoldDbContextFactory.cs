@@ -9,7 +9,7 @@ namespace Infrastructure.Data
     {
         public TimeIsGoldDbContext CreateDbContext(string[] args)
         {
-            // Caminho para o appsettings.json do projeto de startup
+            // Caminho para o appsettings.json
             var basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "TimeIsGold");
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)

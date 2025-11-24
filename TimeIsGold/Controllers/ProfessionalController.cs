@@ -5,6 +5,7 @@ using Domain.DTOs.Professional;
 using Domain.Entities;
 using Domain.Ports.Professional;
 using Microsoft.AspNetCore.Mvc;
+using TimeIsGold.Controllers.Base;
 
 namespace TimeIsGold.Controllers
 {
@@ -19,9 +20,8 @@ namespace TimeIsGold.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ProfessionalDTO professionalDTO)
         {
-            var professional = _service.Create(professionalDTO, out List<ErrorMessage> errors);
 
-            if (professional != false) return Ok("Profissional criado com sucesso!");
+            if (_service.Create(professionalDTO, out List<ErrorMessage> errors)) return CreatedAtAction(nameof(Create), professionalDTO);
 
             return UnprocessableEntity(errors);
         }
@@ -32,8 +32,6 @@ namespace TimeIsGold.Controllers
             _service.Update(professional, out List<ErrorMessage> errors);
 
             if (errors.Count == 0) return NoContent();
-
-            if (errors.Any(e => e.Property == "Professional" && e.Message.Contains("não encontrado")))return NotFound(errors);
 
             return BadRequest(errors);
         }
@@ -46,7 +44,7 @@ namespace TimeIsGold.Controllers
                 return BadRequest("Dados de login são obrigatórios.");
             }
 
-            ProfessionalDTOOutput logged = _service.Login(loginDto.Email, loginDto.Password, out List<ErrorMessage> messages);
+            LoginResponse logged = _service.Login(loginDto.Email, loginDto.Password, out List<ErrorMessage> messages);
 
             if (logged == null) return Unauthorized(messages);
 
