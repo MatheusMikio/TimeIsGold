@@ -5,6 +5,7 @@ namespace Domain.Entities
 {
     public class Professional : BaseUser
     {
+        public IList<Scheduling>? Schedulings { get; set; }
         public ProfessionalType Type { get; set; }
         public long EnterpriseId { get; set; }
         public Enterprise Enterprise { get; set; }

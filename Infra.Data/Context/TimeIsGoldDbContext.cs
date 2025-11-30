@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Data
 {
@@ -46,10 +47,6 @@ namespace Infrastructure.Data
                 });
 
             // Adicionando relacionamentos para Scheduling
-            modelBuilder.Entity<Scheduling>()
-                .HasOne(s => s.Client)
-                .WithMany(c => c.Schedulings)
-                .HasForeignKey(s => s.ClientId);
 
             modelBuilder.Entity<Scheduling>()
                 .HasOne(s => s.Professional)

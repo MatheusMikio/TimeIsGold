@@ -12,8 +12,7 @@ namespace Domain.Entities
     {
         public long ProfessionalId { get; set; }
         public Professional Professional { get; set; }
-        public long ClientId { get; set; }
-        public Client Client { get; set; }
+        public string ClientName { get; set; }
         public long SchedulingTypeId { get; set; }
         public long EnterpriseId { get; set; }
         public Enterprise Enterprise { get; set; }

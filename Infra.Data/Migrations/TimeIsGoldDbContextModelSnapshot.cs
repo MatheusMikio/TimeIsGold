@@ -200,8 +200,9 @@ namespace Infra.Data.Migrations
                     b.Property<DateTime?>("ChangedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<long>("ClientId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -222,8 +223,6 @@ namespace Infra.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
 
                     b.HasIndex("EnterpriseId");
 
@@ -334,12 +333,6 @@ namespace Infra.Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.Scheduling", b =>
                 {
-                    b.HasOne("Domain.Entities.Client", "Client")
-                        .WithMany("Schedulings")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Enterprise", "Enterprise")
                         .WithMany()
                         .HasForeignKey("EnterpriseId")
@@ -358,8 +351,6 @@ namespace Infra.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
-
                     b.Navigation("Enterprise");
 
                     b.Navigation("Professional");
@@ -376,11 +367,6 @@ namespace Infra.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Enterprise");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Client", b =>
-                {
-                    b.Navigation("Schedulings");
                 });
 
             modelBuilder.Entity("Domain.Entities.Enterprise", b =>

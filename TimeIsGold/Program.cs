@@ -11,9 +11,10 @@ using Domain.Ports.SchedulingType;
 using Domain.ValueObjects;
 using Infra.Data.Repositories;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -34,6 +35,12 @@ namespace TimeIsGold
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new EntityToDTOMapping());
+            });
+
+            builder.Services.AddDbContext<TimeIsGoldDbContext>(options =>
+            {
+                options.UseNpgsql(connection);
+                options.UseLoggerFactory(LoggerFactory.Create(loggingBuilder => loggingBuilder.AddConsole()));
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

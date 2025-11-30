@@ -27,7 +27,7 @@ namespace Infra.Data.Repositories
             return !_context.Schedulings.Any(
                 s => s.Id != scheduling.Id &&
                 (
-                    (s.ProfessionalId == scheduling.ProfessionalId || s.ClientId == scheduling.ClientId) &&
+                    (s.ProfessionalId == scheduling.ProfessionalId || s.ClientName == scheduling.ClientName) &&
                     s.ScheduledDate >= startRange &&
                     s.ScheduledDate < endRange
                 )
@@ -51,7 +51,7 @@ namespace Infra.Data.Repositories
             DateTime tomorrow = today.AddDays(1);
             return _context.Schedulings
                 .Include(s => s.Professional)
-                .Include(s => s.Client)
+                .Include(s => s.ClientName)
                 .Include(s => s.SchedulingType)
                 .Where(s => s.ProfessionalId == id &&
                             s.ScheduledDate >= today &&
@@ -87,14 +87,14 @@ namespace Infra.Data.Repositories
             return result;
         }
 
-        public bool GetSchedulingByDate(long professionalId, long clientId, DateTime scheduledDate)
+        public bool GetSchedulingByDate(long professionalId, string ClientName, DateTime scheduledDate)
         {
             DateTime startRange = DateTime.SpecifyKind(scheduledDate.AddMinutes(-30), DateTimeKind.Utc);
             DateTime endRange = DateTime.SpecifyKind(scheduledDate.AddMinutes(30), DateTimeKind.Utc);
 
             return _context.Schedulings.Any(
                 s => s.ProfessionalId == professionalId &&
-                     s.ClientId == clientId &&
+                     s.ClientName == ClientName &&
                      s.ScheduledDate >= startRange &&
                      s.ScheduledDate < endRange
             );
@@ -134,7 +134,7 @@ namespace Infra.Data.Repositories
 
             return _context.Schedulings
                 .Include(s => s.Professional)
-                .Include(s => s.Client)
+                .Include(s => s.ClientName)
                 .Include(s => s.SchedulingType)
                 .Where(s => s.ProfessionalId == id &&
                             s.ScheduledDate >= startDate &&

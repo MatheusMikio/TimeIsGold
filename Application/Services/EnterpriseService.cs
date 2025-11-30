@@ -137,7 +137,7 @@ namespace Application.Services
                 validation = false;
             }
 
-            var existing = ((IEnterpriseRepository)repository).GetByCnpj(enterprise.Cnpj);
+            var existing = (repository).GetByCnpj(enterprise.Cnpj);
             if (existing != null && existing.Id != enterprise.Id)
             {
                 messages.Add(new ErrorMessage("Cnpj", "O CNPJ informado já está em uso por outra empresa."));

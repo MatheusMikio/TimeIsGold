@@ -15,7 +15,6 @@ namespace Domain.Entities.BaseEntities
         public string PasswordHash { get; set; }
         public string Phone { get; set; }
         public bool Status { get; set; }
-        public IList<Scheduling> ? Schedulings { get; set; }
         protected BaseUser(){ }
     }
 }

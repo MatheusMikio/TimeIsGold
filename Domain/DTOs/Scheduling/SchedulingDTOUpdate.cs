@@ -11,7 +11,7 @@ namespace Domain.DTOs.Scheduling
     {
         public long Id { get; set; }
         public long ProfessionalId { get; set; }
-        public long ClientId { get; set; }
+        public string ClientName { get; set; }
         public long EnterpriseId { get; set; }
         public long SchedulingTypeId { get; set; }
         public DateTime ScheduledDate { get; set; }
