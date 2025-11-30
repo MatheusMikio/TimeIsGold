@@ -140,7 +140,7 @@ namespace Infra.Data.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ProfessionalId = table.Column<long>(type: "bigint", nullable: false),
-                    ClientId = table.Column<long>(type: "bigint", nullable: false),
+                    ClientName = table.Column<string>(type: "text", nullable: false),
                     SchedulingTypeId = table.Column<long>(type: "bigint", nullable: false),
                     EnterpriseId = table.Column<long>(type: "bigint", nullable: false),
                     ScheduledDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -151,12 +151,6 @@ namespace Infra.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedulings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Schedulings_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Schedulings_Enterprises_EnterpriseId",
                         column: x => x.EnterpriseId,
@@ -188,11 +182,6 @@ namespace Infra.Data.Migrations
                 column: "EnterpriseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schedulings_ClientId",
-                table: "Schedulings",
-                column: "ClientId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Schedulings_EnterpriseId",
                 table: "Schedulings",
                 column: "EnterpriseId");
@@ -217,10 +206,10 @@ namespace Infra.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Schedulings");
+                name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "Schedulings");
 
             migrationBuilder.DropTable(
                 name: "Professionals");

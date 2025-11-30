@@ -34,10 +34,9 @@ namespace Application.Mapping
             CreateMap<Professional, ProfessionalDTOOutput>()
                 .ForMember(dest => dest.EnterpriseId, opt => opt.MapFrom(src => src.EnterpriseId))
                 .ForMember(dest => dest.Schedulings, opt => opt.Ignore());
-            
+
             CreateMap<Scheduling, SchedulingDTOOutput>()
-                .ForMember(dest => dest.Professional, opt => opt.MapFrom(src => src.Professional))
-                .ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client));
+                .ForMember(dest => dest.Professional, opt => opt.MapFrom(src => src.Professional));
             
             CreateMap<SchedulingType, SchedulingTypeDTOOutput>();
 

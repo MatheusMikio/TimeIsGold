@@ -10,6 +10,7 @@ using Domain.Ports.Scheduling;
 using Domain.Ports.SchedulingType;
 using Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace Application.Services
 {
@@ -167,9 +168,9 @@ namespace Application.Services
                 Scheduling schedulingDb = _repository.GetById<Scheduling>(schedulingDTO.Id);
                 try
                 {
-                    schedulingDb.ClientId = schedulingDTO.ClientId;
                     schedulingDb.ProfessionalId = schedulingDTO.ProfessionalId;
                     schedulingDb.EnterpriseId = schedulingDTO.EnterpriseId;
+                    schedulingDb.ClientName = schedulingDTO.ClientName;
                     schedulingDb.ScheduledDate = schedulingDTO.ScheduledDate;
                     schedulingDb.Status = (Status)schedulingDTO.Status;
                     schedulingDb.ChangedAt = DateTime.UtcNow;
@@ -205,11 +206,16 @@ namespace Application.Services
                 return false;
             }
 
-            Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
-            if (clientDb == null)
+            if (scheduling.ClientName.Length < 3)
             {
-                messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-                return false;
+                messages.Add(new ErrorMessage("Cliente", "Nome do cliente deve ter no mínimo 3 caracteres"));
+                validation = false;
+            }
+
+            if (Regex.IsMatch(scheduling.ClientName, @"\d"))
+            {
+                messages.Add(new ErrorMessage("Cliente", "Nome do cliente não pode conter números"));
+                validation = false;
             }
 
             Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);
@@ -238,7 +244,7 @@ namespace Application.Services
                 return false;
             }
 
-            bool schedulingDb = repository.GetSchedulingByDate(scheduling.ProfessionalId, scheduling.ClientId, scheduling.ScheduledDate);
+            bool schedulingDb = repository.GetSchedulingByDate(scheduling.ProfessionalId, scheduling.ClientName, scheduling.ScheduledDate);
 
             if (schedulingDb)
             {
@@ -278,11 +284,16 @@ namespace Application.Services
                 return false;
             }
 
-            Client ? clientDb = clientRepository.GetById<Client>(scheduling.ClientId);
-            if (clientDb == null)
+            if (scheduling.ClientName.Length < 3)
             {
-                messages.Add(new ErrorMessage("Cliente", "Cliente não encontrado"));
-                return false;
+                messages.Add(new ErrorMessage("Cliente", "Nome do cliente deve ter no mínimo 3 caracteres"));
+                validation = false;
+            }
+
+            if (Regex.IsMatch(scheduling.ClientName, @"\d"))
+            {
+                messages.Add(new ErrorMessage("Cliente", "Nome do cliente não pode conter números"));
+                validation = false;
             }
 
             Enterprise ? enterpriseDb = enterpriseRepository.GetById<Enterprise>(scheduling.EnterpriseId);

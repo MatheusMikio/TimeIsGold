@@ -16,7 +16,7 @@ namespace Domain.Ports.Scheduling
         public List<Entities.Scheduling> GetSchedulingsByPeriod(long id, PeriodType periodType);
         public List<Entities.Scheduling> GetSchedulingsProfessional(long id);
         public int GetPendentsSchedulings(long id);
-        public bool GetSchedulingByDate(long professionalId, long clientId, DateTime scheduledDate);
+        public bool GetSchedulingByDate(long professionalId, string ClientName, DateTime scheduledDate);
         public bool IsUnique(SchedulingDTOUpdate plan);
     }
 }

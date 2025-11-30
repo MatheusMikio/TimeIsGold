@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Application.DTOs.Client;
 using Application.DTOs.Professional;
 using Application.Services.Base;
 using AutoMapper;
 using Domain.DTOs.Login;
 using Domain.DTOs.Professional;
 using Domain.Entities;
+using Domain.Ports;
 using Domain.Ports.Professional;
 using Domain.ValueObjects;
 
@@ -14,8 +14,10 @@ namespace Application.Services
 {
     public class ProfessionalService : BaseService<ProfessionalDTO, Professional, IProfessionalRepository>, IProfessionalService
     {
-        public ProfessionalService(IProfessionalRepository repository, IMapper mapper) : base(repository, mapper)
+        private readonly ITokenService _tokenService;
+        public ProfessionalService(IProfessionalRepository repository, IMapper mapper, ITokenService tokenService) : base(repository, mapper)
         {
+            _tokenService = tokenService;
         }
 
         public bool Create(ProfessionalDTO professionalDTO, out List<ErrorMessage> messages)
@@ -286,7 +288,7 @@ namespace Application.Services
             return true;
         }
 
-        public ProfessionalDTOOutput Login(string email, string password, out List<ErrorMessage> messages)
+        public LoginResponse Login(string email, string password, out List<ErrorMessage> messages)
         {
             messages = new List<ErrorMessage>();
 
@@ -309,7 +311,10 @@ namespace Application.Services
                 return null;
             }
 
-            return _mapper.Map<ProfessionalDTOOutput>(profesional);
+            ProfessionalDTOOutput professionalDTOOutput = _mapper.Map<ProfessionalDTOOutput>(profesional);
+            string token = _tokenService.Generate(professionalDTOOutput);
+
+            return new LoginResponse { Professional = professionalDTOOutput, Token = token };
         }
     }
 }

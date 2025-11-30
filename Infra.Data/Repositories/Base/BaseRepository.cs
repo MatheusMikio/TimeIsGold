@@ -31,17 +31,11 @@ namespace Infra.Data.Repositories.Base
                     .Include("Professionals");
             }
 
-            if (typeof(Thing) == typeof(Client))
-            {
-                query = query
-                    .Include("Schedulings");
-            }
 
             if (typeof(Thing) == typeof(Scheduling))
             {
                 query = query
                     .Include("Professional")
-                    .Include("Client")
                     .Include("SchedulingType")
                     .Include("Enterprise");
             }
@@ -91,7 +85,6 @@ namespace Infra.Data.Repositories.Base
                     nameof(
                         Scheduling) => query
                         .Include("Professional")
-                        .Include("Client")
                         .Include("SchedulingType")
                         .Where(s => 
                             EF.Property<string>(s, "Status").Contains(searchText)
@@ -128,7 +121,6 @@ namespace Infra.Data.Repositories.Base
             {
                 return _context.Set<Thing>()
                     .Include("Professional")
-                    .Include("Client")
                     .Include("SchedulingType")
                     .FirstOrDefault(s => EF.Property<long>(s, "Id") == id);
             }
