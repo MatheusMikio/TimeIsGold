@@ -51,7 +51,6 @@ namespace Infra.Data.Repositories
             DateTime tomorrow = today.AddDays(1);
             return _context.Schedulings
                 .Include(s => s.Professional)
-                .Include(s => s.ClientName)
                 .Include(s => s.SchedulingType)
                 .Where(s => s.ProfessionalId == id &&
                             s.ScheduledDate >= today &&
@@ -134,7 +133,6 @@ namespace Infra.Data.Repositories
 
             return _context.Schedulings
                 .Include(s => s.Professional)
-                .Include(s => s.ClientName)
                 .Include(s => s.SchedulingType)
                 .Where(s => s.ProfessionalId == id &&
                             s.ScheduledDate >= startDate &&

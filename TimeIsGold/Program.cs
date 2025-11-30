@@ -28,8 +28,6 @@ namespace TimeIsGold
 
             // Add services to the container.
             string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<TimeIsGoldDbContext>(options =>
-                options.UseNpgsql(connection));
 
             // Configuração do AutoMapper
             var mapperConfig = new MapperConfiguration(mc =>
