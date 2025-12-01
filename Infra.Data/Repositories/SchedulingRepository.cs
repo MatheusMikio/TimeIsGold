@@ -24,13 +24,12 @@ namespace Infra.Data.Repositories
             DateTime startRange = DateTime.SpecifyKind(scheduling.ScheduledDate.AddMinutes(-30), DateTimeKind.Utc);
             DateTime endRange = DateTime.SpecifyKind(scheduling.ScheduledDate.AddMinutes(30), DateTimeKind.Utc);
 
+            // Verifica se existe conflito com o mesmo profissional OU com o mesmo cliente
             return !_context.Schedulings.Any(
                 s => s.Id != scheduling.Id &&
-                (
-                    (s.ProfessionalId == scheduling.ProfessionalId || s.ClientName == scheduling.ClientName) &&
-                    s.ScheduledDate >= startRange &&
-                    s.ScheduledDate < endRange
-                )
+                s.ScheduledDate >= startRange &&
+                s.ScheduledDate < endRange &&
+                (s.ProfessionalId == scheduling.ProfessionalId || s.ClientName == scheduling.ClientName)
             );
         }
 

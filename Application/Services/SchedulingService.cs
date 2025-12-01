@@ -303,11 +303,6 @@ namespace Application.Services
                 return false;
             }
 
-            if (scheduling.ScheduledDate < DateTime.UtcNow)
-            {
-                messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
-                return false;
-            }
             SchedulingType ? schedulingTypeDb = schedulingTypeRepository.GetById<SchedulingType>(scheduling.SchedulingTypeId);
             if (schedulingTypeDb == null)
             {
@@ -321,11 +316,25 @@ namespace Application.Services
                 return false;
             }
 
-            if (!repository.IsUnique(scheduling))
+            // Verifica se houve alteração em campos que exigem validação de conflito
+            bool dataChanged = schedulingDb.ScheduledDate != scheduling.ScheduledDate || 
+                               schedulingDb.ProfessionalId != scheduling.ProfessionalId ||
+                               schedulingDb.ClientName != scheduling.ClientName;
+
+            // Só valida data no passado se os dados críticos mudaram
+            if (dataChanged && scheduling.ScheduledDate < DateTime.UtcNow)
+            {
+                messages.Add(new ErrorMessage("Data", "A data agendada não pode ser no passado"));
+                return false;
+            }
+
+            // Só verifica conflitos de horário se os dados críticos mudaram
+            if (dataChanged && !repository.IsUnique(scheduling))
             {
                 messages.Add(new ErrorMessage("Data", "Já existe um agendamento para este profissional ou cliente nesta data e hora"));
                 return false;
             }
+            
             return validation;
         }
     }
